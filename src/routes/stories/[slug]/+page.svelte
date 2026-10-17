@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ReadingProgress from '$lib/components/ReadingProgress.svelte';
   import { page } from '$app/state';
 
   let { data } = $props();
@@ -20,6 +21,8 @@
   {#if story.coverImage}<meta property="og:image" content={story.coverImage} />{/if}
   <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
+
+<ReadingProgress />
 
 <article class="article">
   <header class="article__head">

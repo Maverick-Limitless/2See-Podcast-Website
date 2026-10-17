@@ -66,7 +66,7 @@
 {#if lead}
   <section class="section section--tight">
     <div class="section__inner">
-      <div data-reveal>
+      <div data-reveal-x>
         <div class="slot-featured">
           {#if lead.thumbnail}
             <div class="slot-featured__media">
@@ -125,6 +125,20 @@
       </div>
 
       <div class="mosaic">
+        {#if lead?.summary && lead.summary.trim() !== ''}
+          <aside class="mosaic__cell mosaic__cell--wide" data-reveal>
+            <div class="quote-tile">
+              <p class="quote-tile__mark" aria-hidden="true">&ldquo;</p>
+              <blockquote class="quote-tile__text">
+                {lead.summary.replace(/…$/, '')}
+              </blockquote>
+              <p class="quote-tile__source">
+                From the featured {lead.format === 'brief' ? 'brief' : 'episode'}
+              </p>
+            </div>
+          </aside>
+        {/if}
+
         {#each rest as episode, index (episode.id)}
           <EpisodeCard {episode} {index} textLed={index === 2} />
         {/each}

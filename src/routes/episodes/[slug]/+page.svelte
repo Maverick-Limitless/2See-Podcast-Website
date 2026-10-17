@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ReadingProgress from '$lib/components/ReadingProgress.svelte';
   import EpisodePlayer from '$lib/components/EpisodePlayer.svelte';
   import Duration from '$lib/components/Duration.svelte';
   import FormatDate from '$lib/components/FormatDate.svelte';
@@ -31,6 +32,8 @@
   <meta property="og:video" content={data.watchUrl} />
   <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
+
+<ReadingProgress />
 
 <article class="article">
   <header class="article__head">

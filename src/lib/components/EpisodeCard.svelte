@@ -19,7 +19,12 @@
   const title = $derived(episode.originalTitle !== '' ? episode.originalTitle : episode.title);
 </script>
 
-<article class="{spanClass} card" class:card--featured={episode.featured} class:card--portrait={episode.format === 'short'}>
+<article
+  class="{spanClass} card"
+  class:card--featured={episode.featured}
+  class:card--portrait={episode.format === 'short'}
+  class:card--square={episode.format === 'brief'}
+>
   {#if !textLed && episode.thumbnail}
     <div class="card__frame">
       <img
@@ -52,12 +57,14 @@
       {#if episode.category}<span class="card__dot"></span><span>{episode.category}</span>{/if}
     </p>
 
-    <h3 class="card__title" class:card__title--persian={isPersian}>
-      <a class="card__link" {href}>{title}</a>
+    <h3 class="card__title" class:card__title--persian={isPersian} dir="auto">
+      <a class="card__link" {href} dir="auto">{title}</a>
     </h3>
 
     {#if episode.summary}
-      <p class="card__summary" class:card__summary--persian={isPersian}>{episode.summary}</p>
+      <p class="card__summary" class:card__summary--persian={isPersian} dir="auto">
+        {episode.summary}
+      </p>
     {/if}
 
     <div class="card__foot">

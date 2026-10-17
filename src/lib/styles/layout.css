@@ -15,9 +15,19 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(12px) saturate(140%);
   border-bottom: 1px solid var(--rule);
+  background: var(--glass-bg-fallback);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .masthead {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    /* A hairline lighter than the rule below it, so the glass reads as a
+       floating pane rather than a band. */
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  }
 }
 
 .masthead__inner {

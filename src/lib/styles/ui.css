@@ -80,6 +80,7 @@
 .btn--small {
   padding: 0.4375rem 0.75rem;
   font-size: var(--t-micro);
+  min-height: 2.75rem;
 }
 
 .btn--block {
@@ -206,7 +207,12 @@
   background: transparent;
   border: 1px solid var(--rule-strong);
   border-radius: 2px;
-  padding: 0.375rem 0.6875rem;
+  /* 44px on the short side keeps every filter within the WCAG 2.2 AA
+     target-size minimum on touch, without making labels look oversized. */
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 0.875rem;
   cursor: pointer;
   transition: all var(--d-fast) var(--e-out);
 }

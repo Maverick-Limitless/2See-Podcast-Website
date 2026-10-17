@@ -13,7 +13,7 @@
   const href = $derived(`/stories/${story.slug}`);
 </script>
 
-<article class="{spanClass} card" class:card--featured={story.featured}>
+<article class="{spanClass} card card--editorial" class:card--featured={story.featured}>
   {#if !textLed && story.coverImage}
     <div class="card__frame">
       <img
@@ -37,8 +37,8 @@
       </p>
     {/if}
 
-    <h3 class="card__title">
-      <a class="card__link" {href}>{story.title}</a>
+    <h3 class="card__title" dir="auto">
+      <a class="card__link" {href} dir="auto">{story.title}</a>
     </h3>
 
     {#if story.subtitle}

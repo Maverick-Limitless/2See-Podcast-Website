@@ -26,6 +26,29 @@
   will-change: auto;
 }
 
+/* Variety by purpose: the featured slot slides in along the reading axis rather
+   than rising like the cards, so the two entrances read as different gestures.
+   Still transform + opacity only. In an RTL context it comes from the other
+   side. */
+[data-reveal-x] {
+  opacity: 0;
+  transform: translateX(calc(var(--reveal-distance) * -1.4));
+  transition: opacity var(--d-reveal) var(--e-out),
+    transform var(--d-reveal) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal-x].is-revealed {
+  opacity: 1;
+  transform: translateX(0);
+  will-change: auto;
+}
+
+[dir='rtl'] [data-reveal-x] {
+  transform: translateX(calc(var(--reveal-distance) * 1.4));
+}
+
 /* Editorial title reveal: a mask that slides up, words arriving as a line. */
 .reveal-line {
   overflow: hidden;
@@ -206,6 +229,7 @@ main {
   }
 
   [data-reveal],
+  [data-reveal-x],
   .reveal-line > * {
     opacity: 1;
     transform: none;

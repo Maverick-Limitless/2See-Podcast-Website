@@ -24,7 +24,7 @@
   /* Sampled from the channel's thumbnail artwork. */
   --amber: #e0952f;
   --amber-bright: #f3a545;
-  --amber-deep: #b8701a;
+  --amber-deep: #8f5409;
   --amber-ghost: rgba(224, 149, 47, 0.14);
   --teal: #06685d;
   --crimson: #b21c2c;
@@ -37,6 +37,16 @@
   --surface: #ffffff;
   --surface-sunk: #f4f0e8;
   --focus: #0b57d0;
+
+  /* ---- glass ------------------------------------------------------------ */
+  /* One restrained glass recipe. Used by the masthead and the reading
+     progress rail only; cards and panels stay solid on purpose. The -fallback
+     value is fully opaque so unsupported browsers get clean contrast. */
+  --glass-bg: color-mix(in srgb, var(--paper) 82%, transparent);
+  --glass-bg-fallback: rgba(247, 243, 236, 0.96);
+  --glass-blur: 14px;
+  --glass-saturate: 150%;
+  --glass-border: rgba(14, 17, 22, 0.1);
 
   /* ---- type ------------------------------------------------------------ */
   /* Self-hosted: no external font request, all licences documented in
@@ -201,13 +211,30 @@ a {
   color: var(--ink);
 }
 
-/* Persian content keeps its own direction and face wherever it appears. */
+/* Persian content keeps its own direction and face wherever it appears.
+   Every class that can carry Persian text is listed once, here, so direction
+   is a system rather than a per-component patch. text-align: start lets the
+   direction decide; mixed-script runs inside stay isolated. */
 [lang='fa'],
-.persian {
+.persian,
+.card__title--persian,
+.card__summary--persian,
+.prose--persian,
+.slot-featured__title.persian,
+.article__title.persian,
+.article__subtitle.persian {
   font-family: var(--font-persian);
   direction: rtl;
   unicode-bidi: isolate;
+  text-align: start;
   line-height: 1.9;
+}
+
+/* Within Persian runs, Latin words, numerals and punctuation stay LTR and
+   correctly ordered. */
+.card__title--persian :is(a, span),
+.persian bdi {
+  unicode-bidi: isolate;
 }
 
 .visually-hidden {

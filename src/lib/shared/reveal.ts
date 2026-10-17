@@ -1,7 +1,7 @@
 /**
  * Scroll-reveal controller.
  *
- * One observer watches every `[data-reveal]` element in the document. Content
+ * One observer watches every `[data-reveal]` and `[data-reveal-x]` element. Content
  * that is already on screen when it is observed is revealed immediately, so
  * above-the-fold material is never left invisible if scripting is slow or the
  * observer is unavailable.
@@ -12,7 +12,11 @@
  */
 
 export function observeReveals(root: ParentNode = document): void {
-  const targets = Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
+  // Both entrance variants are observed by the same controller, so a new
+  // variant can never ship without its reveal wiring.
+  const targets = Array.from(
+    root.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-x]')
+  );
   if (targets.length === 0) return;
 
   const reveal = (element: HTMLElement): void => {

@@ -75,6 +75,12 @@
         {format.label}
       </a>
     {/each}
+
+    {#if filters.format !== 'all' || filters.query !== '' || filters.category !== ''}
+      <a class="chip" href="/episodes" aria-label="Clear the search and filters">
+        Clear filters &#10005;
+      </a>
+    {/if}
   </div>
 </div>
 

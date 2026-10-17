@@ -22,13 +22,18 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
   const db = getDb();
 
+  // The lead is the newest long-form work — the programme's primary format.
+  // A Short must never dominate the hero: it is a clip, not the issue of record.
   const episodes = listEpisodes({ pageSize: 6, format: 'all' });
+  const longForm = episodes.items.filter((item) => item.format !== 'short');
   const stories = listStories({ pageSize: 4 });
   const site = getSettings();
 
   // The hero is the newest long-form episode, which is the publication's
   // primary format. The weekly brief leads only when nothing longer exists.
-  const [lead, ...rest] = episodes.items;
+  const lead = longForm[0] ?? null;
+  // Discovery keeps every format, including the Shorts, minus the lead.
+  const rest = episodes.items.filter((item) => item.id !== lead?.id).slice(0, 5);
 
   // A short, verified framing for the introduction — two hosts, two registers.
   const counts = {

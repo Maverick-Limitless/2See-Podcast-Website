@@ -13,6 +13,9 @@
 
   const { episode, index, textLed = false }: Props = $props();
   const spanClass = $derived(episode.spanClass);
+  // An image-led card floats its text over the artwork in a glass panel; a
+  // text-led card keeps the solid reading surface. The mix is the rhythm.
+  const overlay = $derived(!textLed && episode.thumbnail !== '');
 
   const href = `/episodes/${episode.slug}`;
   const isPersian = $derived(episode.language === 'fa');
@@ -24,6 +27,7 @@
   class:card--featured={episode.featured}
   class:card--portrait={episode.format === 'short'}
   class:card--square={episode.format === 'brief'}
+  class:card--overlay={overlay}
 >
   {#if !textLed && episode.thumbnail}
     <div class="card__frame">

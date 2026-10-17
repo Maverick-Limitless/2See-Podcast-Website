@@ -248,3 +248,61 @@ main {
     animation: none;
   }
 }
+
+
+/* ---- headline mask reveal --------------------------------------------------
+   The opening headline rises out of a clip mask, line by line, a deliberate
+   editorial gesture that only runs once and never delays interaction: the
+   text is fully present in the DOM and readable by assistive technology from
+   first paint. */
+
+.hero-mask {
+  overflow: hidden;
+  display: block;
+}
+
+.hero-mask > * {
+  display: block;
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform var(--d-reveal) var(--e-out),
+    opacity var(--d-reveal) var(--e-out);
+}
+
+.is-revealed .hero-mask > *,
+.hero-mask.is-revealed > * {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Stagger between the two lines of the opening statement. */
+.hero-mask--2 > * {
+  transition-delay: calc(var(--stagger-step) * 2);
+}
+
+/* ---- image settle ----------------------------------------------------------
+   As a card reveals, its image settles from a barely-larger crop to rest:
+   the sense that the page has been placed, not switched on. Transform only,
+   and it respects the existing reduced-motion block at the foot of this file.
+   */
+@keyframes image-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1.001);
+  }
+}
+
+.is-revealed .card__image,
+.card.is-revealed .card__image {
+  animation: image-settle var(--d-slow) var(--e-out) both;
+}
+
+/* ---- chip press ------------------------------------------------------------
+   A 1px press on the amber-underline state gives the filter row a tactile
+   answer to a successful tap. */
+.chip:active {
+  transform: scale(0.97);
+  transition: transform var(--d-instant) var(--e-in-out);
+}

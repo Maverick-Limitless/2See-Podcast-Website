@@ -169,15 +169,17 @@
 /* ---- disclosure ------------------------------------------------------- */
 
 .disclosure {
+  /* A quiet single line under the opening band. The disclosure is required,
+     but it must not compete with the composition above it. */
   font-family: var(--font-display);
   font-size: var(--t-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--graphite);
-  border-bottom: 1px solid var(--rule);
-  padding: 0.5rem var(--gutter);
+  padding: 0.875rem var(--gutter);
   text-align: center;
-  background: var(--paper-soft);
+  background: var(--paper);
+  border-block-end: 1px solid var(--rule);
 }
 
 /* ---- sections --------------------------------------------------------- */

@@ -25,92 +25,82 @@
   <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
-<!-- Hero: the thesis. The publication arrives as a pair — a long conversation
-     and a weekly brief — so the hero splits into a numbered editorial
-     statement and the current lead episode. -->
-<section class="hero">
-  <div class="hero__inner">
+<!-- The brief band: hero and lead episode as one full-bleed composition on the
+     programme's own deep-navy ground. The headline states the premise; the
+     current lead episode answers it behind a glass caption. -->
+<section class="brief-band">
+  <div class="brief-band__inner">
     <div data-reveal>
-      <p class="hero__eyebrow">{introEyebrow}</p>
-      <h1 class="hero__title">
-        Technology, business and policy, <span class="hero__numeral">seen twice</span>
+      <p class="brief-band__eyebrow">{introEyebrow}</p>
+      <h1 class="brief-band__title">
+        <span class="hero-mask">Technology, business</span>
+        <span class="hero-mask hero-mask--2">and policy, <span class="brief-band__numeral">seen twice</span></span>
       </h1>
-      <p class="hero__lede">
+      <p class="brief-band__lede">
         {data.site.tagline}. Long conversations with guests and entrepreneurs, and a weekly
         briefing on the same territory — both aimed at making complex ideas understandable.
       </p>
-    </div>
 
-    <div class="hero__aside" data-reveal style="--reveal-delay: 120ms">
-      <div class="hero__stat">
-        <span class="hero__stat-value">{data.counts.episodesLong.n}</span>
-        <span class="hero__stat-label">Long-form episodes</span>
+      <div class="brief-band__stats">
+        <div class="brief-band__stat">
+          <span class="brief-band__stat-value">{data.counts.episodesLong.n}</span>
+          <span class="brief-band__stat-label">Long-form episodes</span>
+        </div>
+        <div class="brief-band__stat">
+          <span class="brief-band__stat-value">{data.episodes.total}</span>
+          <span class="brief-band__stat-label">Published entries</span>
+        </div>
       </div>
-      <div class="hero__stat">
-        <span class="hero__stat-value">{data.episodes.total}</span>
-        <span class="hero__stat-label">Published entries</span>
-      </div>
-      <p class="hero__persian">
+
+      <p class="brief-band__persian">
         به توسی خوش آمدید؛ جایی که دو دانشجوی ایرانی از استنفورد و هاروارد به فناوری، تجارت و
         سیاست‌گذاری می‌پردازند.
       </p>
     </div>
+
+    {#if lead}
+      <a
+        class="brief-band__media"
+        href={`/episodes/${lead.slug}`}
+        data-reveal-x
+        style="--reveal-delay: 160ms"
+      >
+        {#if lead.thumbnail}
+          <img
+            src={lead.thumbnail}
+            alt=""
+            width="1280"
+            height="720"
+            fetchpriority="high"
+            decoding="sync"
+          />
+        {/if}
+        <span class="brief-band__caption">
+          <span class="brief-band__caption-eyebrow">
+            {#if lead.episodeNumber !== null}
+              {lead.series === '2See Brief' ? `Brief CW${lead.episodeNumber}` : `Episode ${lead.episodeNumber}`}
+            {:else}
+              {lead.format === 'brief' ? 'Weekly brief' : 'Latest'}
+            {/if}
+          </span>
+          <span class="brief-band__caption-title" dir="auto">
+            {lead.originalTitle !== '' ? lead.originalTitle : lead.title}
+          </span>
+          <span class="brief-band__caption-meta">
+            <FormatDate iso={lead.publishedAt} />
+            {#if lead.durationSeconds}
+              · <Duration seconds={lead.durationSeconds} />
+            {/if}
+          </span>
+        </span>
+      </a>
+    {/if}
   </div>
 </section>
 
 <p class="disclosure">
   An independent concept site — not affiliated with or endorsed by 2See Podcast.
 </p>
-
-<!-- Featured: the current lead episode, presented as an editorial spread. -->
-{#if lead}
-  <section class="section section--tight">
-    <div class="section__inner">
-      <div data-reveal-x>
-        <div class="slot-featured">
-          {#if lead.thumbnail}
-            <div class="slot-featured__media">
-              <img
-                src={lead.thumbnail}
-                alt=""
-                width="1280"
-                height="720"
-                fetchpriority="high"
-                decoding="sync"
-              />
-            </div>
-          {/if}
-          <div class="slot-featured__content">
-            <p class="slot-featured__eyebrow">
-              {#if lead.episodeNumber !== null}
-                {lead.series === '2See Brief' ? `Brief CW${lead.episodeNumber}` : `Episode ${lead.episodeNumber}`}
-              {:else}
-                {lead.format === 'brief' ? 'Weekly brief' : 'Latest'}
-              {/if}
-            </p>
-            <h2 class="slot-featured__title" class:persian={lead.language === 'fa'}>
-              <a href={`/episodes/${lead.slug}`}>
-                {lead.originalTitle !== '' ? lead.originalTitle : lead.title}
-              </a>
-            </h2>
-            {#if lead.summary}
-              <p class="slot-featured__summary">{lead.summary}</p>
-            {/if}
-            <div class="slot-featured__foot">
-              <FormatDate iso={lead.publishedAt} />
-              {#if lead.durationSeconds}
-                <Duration seconds={lead.durationSeconds} />
-              {/if}
-              <a class="slot-featured__cta" href={`/episodes/${lead.slug}`}>
-                Read the episode notes <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-{/if}
 
 <!-- Discovery: Pinterest-inspired masonry of the rest of the archive. -->
 {#if rest.length > 0}

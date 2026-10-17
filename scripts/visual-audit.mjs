@@ -83,17 +83,53 @@ for (const viewport of VIEWPORTS) {
       findings.push(`OVERFLOW ${viewport.name}px ${route}: ${overflow}px`);
     }
 
-    // 2. Contrast of representative text roles
+    // 2. Contrast of representative text roles. Both the text colour and its
+    //    effective background are resolved inside the page by walking
+    //    ancestors, so a dark band is measured against its own navy, not
+    //    against an assumed page colour.
     const contrast = await page.evaluate(() => {
       const checks = [];
-      const sample = (selector, label) => {
-        const el = document.querySelector(selector);
-        if (!el) return;
-        const style = getComputedStyle(el);
-        checks.push({ label, selector, color: style.color, size: style.fontSize, weight: style.fontWeight });
+      // Text hosted inside a glass scrim is verified separately by
+      // scrim-contrast.mjs against a worst-case backdrop; sampling it here
+      // against a resolved solid ancestor would be measuring the wrong layer.
+      const scrimHosted = (el) =>
+        el.closest('.card--overlay .card__body, .brief-band__caption') !== null;
+      const parse = (value) => {
+        const m = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/.exec(value);
+        if (!m) return null;
+        return [Number(m[1]), Number(m[2]), Number(m[3]), m[4] === undefined ? 1 : Number(m[4])];
       };
-      sample('.hero__title', 'hero-title');
-      sample('.hero__lede', 'hero-lede');
+      const effectiveBg = (el) => {
+        let node = el;
+        while (node && node instanceof Element) {
+          const bg = parse(getComputedStyle(node).backgroundColor);
+          if (bg && bg[3] > 0) return [bg[0], bg[1], bg[2]];
+          node = node.parentElement;
+        }
+        // Transparent all the way up: the page canvas.
+        const canvas = parse(getComputedStyle(document.documentElement).backgroundColor);
+        return canvas && canvas[3] > 0
+          ? [canvas[0], canvas[1], canvas[2]]
+          : [247, 243, 236];
+      };
+      const sample = (selector, label) => {
+        for (const el of document.querySelectorAll(selector)) {
+          if (scrimHosted(el)) continue;
+          const style = getComputedStyle(el);
+          const fg = parse(style.color);
+          const bg = effectiveBg(el);
+          checks.push({
+            label, selector,
+            fg: fg ? [fg[0], fg[1], fg[2]] : null,
+            bg,
+            size: style.fontSize, weight: style.fontWeight
+          });
+          break;
+        }
+      };
+      sample('.brief-band__title', 'band-title');
+      sample('.brief-band__lede', 'band-lede');
+      sample('.brief-band__persian', 'band-persian');
       sample('.card__title', 'card-title');
       sample('.card__summary', 'card-summary');
       sample('.card__foot', 'card-metadata');
@@ -104,8 +140,8 @@ for (const viewport of VIEWPORTS) {
     });
 
     for (const item of contrast) {
-      const fg = parseRgb(item.color);
-      const bg = effectiveBg(null); // page paper; per-element backgrounds vary below
+      const fg = item.fg;
+      const bg = item.bg;
       if (!fg) continue;
       const ratio = contrastOf(fg, bg);
       // WCAG 2.2 AA: 4.5:1 normal, 3:1 for 24px+ or 19px bold.

@@ -1,0 +1,42 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build output
+build/
+.svelte-kit/
+.vite/
+/playwright-report/
+/test-results/
+coverage/
+
+# secrets and private data
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# local database (never commit database files or private production content)
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp

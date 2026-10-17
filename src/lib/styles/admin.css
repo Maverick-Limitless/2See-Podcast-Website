@@ -1,0 +1,399 @@
+/* ==========================================================================
+   Admin panel — a quiet work surface, not a dashboard
+   ========================================================================== */
+
+.admin {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--surface-sunk);
+}
+
+@media (min-width: 900px) {
+  .admin {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+}
+
+.admin__nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .admin__nav {
+    border-bottom: 0;
+    border-inline-end: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+.admin__brand {
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 900px) {
+  .admin__links {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
+
+.admin__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--graphite);
+  padding: 0.5rem 0.625rem;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  transition: all var(--d-fast) var(--e-out);
+  width: 100%;
+  text-align: start;
+  background: none;
+  cursor: pointer;
+}
+
+.admin__link:hover {
+  color: var(--ink);
+  background: var(--paper-soft);
+}
+
+.admin__link[aria-current='page'] {
+  color: var(--ink);
+  background: var(--paper-soft);
+  border-color: var(--rule);
+  font-weight: 600;
+}
+
+.admin__count {
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--graphite-soft);
+}
+
+.admin__main {
+  padding: clamp(1.25rem, 0.9rem + 1.4vw, 2.5rem);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.admin__title {
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  margin: 0;
+}
+
+.admin__sub {
+  font-size: var(--t-small);
+  color: var(--graphite);
+  margin: 0.375rem 0 0;
+}
+
+/* ---- stat strip ------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 1.75rem;
+}
+
+.stat {
+  background: var(--surface);
+  padding: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.stat__label {
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+/* ---- table ----------------------------------------------------------- */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.panel__title {
+  font-family: var(--font-display);
+  font-size: var(--t-body);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  margin: 0;
+}
+
+.panel__body {
+  padding: 1.25rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+}
+
+.table th {
+  text-align: start;
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.table__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  max-width: 22rem;
+}
+
+.table__meta {
+  font-size: var(--t-micro);
+  color: var(--graphite);
+  display: block;
+  margin-top: 0.1875rem;
+}
+
+.table__actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.table--stack {
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .table--stack thead {
+    display: none;
+  }
+
+  .table--stack tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .table--stack tr {
+    display: grid;
+    gap: 0.375rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.75rem;
+  }
+
+  .table--stack td {
+    border: 0;
+    padding: 0.125rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .table--stack td::before {
+    content: attr(data-label);
+    font-family: var(--font-display);
+    font-size: var(--t-micro);
+    font-weight: 600;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--graphite);
+    flex-shrink: 0;
+  }
+
+  .table__actions {
+    justify-content: flex-start;
+  }
+}
+
+/* ---- badge ----------------------------------------------------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.1875rem 0.4375rem;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  color: var(--graphite);
+  white-space: nowrap;
+}
+
+.badge--published {
+  color: var(--teal);
+  border-color: color-mix(in srgb, var(--teal) 40%, transparent);
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+}
+
+.badge--draft {
+  color: var(--amber-deep);
+  border-color: color-mix(in srgb, var(--amber-deep) 40%, transparent);
+  background: var(--amber-ghost);
+}
+
+/* ---- form layout ----------------------------------------------------- */
+
+.form {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 46rem;
+}
+
+.form--wide {
+  max-width: 62rem;
+}
+
+.form__row {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .form__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--rule);
+  margin-top: 0.5rem;
+}
+
+.form__actions .spacer {
+  margin-inline-start: auto;
+}
+
+/* ---- login ----------------------------------------------------------- */
+
+.login {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: var(--paper);
+}
+
+.login__card {
+  width: 100%;
+  max-width: 25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+
+.login__title {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  margin: 0 0 0.375rem;
+}
+
+.login__sub {
+  font-size: var(--t-small);
+  color: var(--graphite);
+  margin: 0 0 1.5rem;
+}

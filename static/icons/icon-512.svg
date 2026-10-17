@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#f7f3ec"/>
+  <text x="80" y="370" font-family="'Helvetica Neue',Arial,sans-serif" font-size="330" font-weight="800" fill="#b8701a" letter-spacing="-16">2</text>
+  <text x="268" y="370" font-family="'Helvetica Neue',Arial,sans-serif" font-size="330" font-weight="800" fill="#0e1116" letter-spacing="-16">S</text>
+  <rect x="90" y="420" width="332" height="16" fill="#b8701a"/>
+</svg>

@@ -1,0 +1,244 @@
+/* ==========================================================================
+   2See Podcast — design tokens
+   --------------------------------------------------------------------------
+   The visual direction is derived from the podcast's own artwork: a near-black
+   navy ground, warm paper tones, and a single amber accent sampled from the
+   channel's thumbnails. Type pairs a grotesque display face (Archivo) with a
+   reading serif (Newsreader) and Vazirmatn for Persian text, so original
+   Persian titles stay correctly shaped rather than falling back to a system
+   font.
+   ========================================================================== */
+
+:root {
+  /* ---- colour ---------------------------------------------------------- */
+  --ink: #0e1116;
+  --ink-deep: #0b0e17;
+  --ink-soft: #171b24;
+  --ink-line: #262c38;
+  --paper: #f7f3ec;
+  --paper-soft: #f1ece2;
+  --paper-warm: #ece5d8;
+  --graphite: #6e6a63;
+  --graphite-soft: #9a968e;
+
+  /* Sampled from the channel's thumbnail artwork. */
+  --amber: #e0952f;
+  --amber-bright: #f3a545;
+  --amber-deep: #b8701a;
+  --amber-ghost: rgba(224, 149, 47, 0.14);
+  --teal: #06685d;
+  --crimson: #b21c2c;
+
+  --rule: rgba(14, 17, 22, 0.14);
+  --rule-strong: rgba(14, 17, 22, 0.32);
+  --rule-ink: rgba(247, 243, 236, 0.16);
+  --rule-ink-strong: rgba(247, 243, 236, 0.34);
+
+  --surface: #ffffff;
+  --surface-sunk: #f4f0e8;
+  --focus: #0b57d0;
+
+  /* ---- type ------------------------------------------------------------ */
+  /* Self-hosted: no external font request, all licences documented in
+     docs/THIRD-PARTY-NOTICES.md. */
+  --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-persian: 'Vazirmatn', 'Tahoma', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Fluid type scale. clamp() keeps the ratio stable from 360px up. */
+  --t-micro: clamp(0.688rem, 0.66rem + 0.14vw, 0.75rem);
+  --t-small: clamp(0.813rem, 0.78rem + 0.18vw, 0.875rem);
+  --t-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --t-lead: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+  --t-h4: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --t-h3: clamp(1.5rem, 1.35rem + 0.8vw, 2rem);
+  --t-h2: clamp(1.875rem, 1.6rem + 1.4vw, 2.75rem);
+  --t-h1: clamp(2.25rem, 1.7rem + 2.6vw, 4rem);
+  --t-display: clamp(2.75rem, 1.6rem + 5.4vw, 6.5rem);
+
+  /* Editorial tracking: display faces are set tight, labels set wide. */
+  --track-display: -0.022em;
+  --track-tight: -0.012em;
+  --track-label: 0.14em;
+
+  --lh-tight: 1.06;
+  --lh-snug: 1.18;
+  --lh-body: 1.62;
+  --lh-lead: 1.42;
+
+  /* ---- layout ---------------------------------------------------------- */
+  --gutter: clamp(1.125rem, 0.6rem + 2.4vw, 3rem);
+  --max: 1440px;
+  --max-text: 62ch;
+  --max-wide: 1680px;
+
+  /* The compositional unit. Everything is a multiple of this. */
+  --u: 0.5rem;
+  --u2: 1rem;
+  --u3: 1.5rem;
+  --u4: 2rem;
+  --u6: 3rem;
+  --u8: 4rem;
+  --u12: 6rem;
+  --u16: 8rem;
+
+  --radius: 2px;
+  --radius-card: 3px;
+  --radius-media: 4px;
+
+  /* ---- motion ----------------------------------------------------------
+     A single, documented motion language. Duration, easing, distance and
+     stagger are tokens so every animation shares one rhythm. Reduced-motion
+     collapses all of them at the bottom of this file.
+     ---------------------------------------------------------------------- */
+  --d-instant: 90ms;
+  --d-fast: 160ms;
+  --d-base: 260ms;
+  --d-slow: 420ms;
+  --d-reveal: 640ms;
+
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --e-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --e-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  --reveal-distance: 18px;
+  --stagger-step: 55ms;
+
+  --shadow-card: 0 1px 2px rgba(11, 14, 23, 0.04), 0 8px 24px rgba(11, 14, 23, 0.06);
+  --shadow-lift: 0 2px 4px rgba(11, 14, 23, 0.06), 0 16px 40px rgba(11, 14, 23, 0.1);
+}
+
+/* Typography loading is unavoidable for a bespoke type system, but scope the
+   face changes to the elements that need them so first paint stays stable. */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-latin-1.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-latin-3.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-0.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+/* ==========================================================================
+   Reset and base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: var(--amber-ghost);
+  color: var(--ink);
+}
+
+/* Persian content keeps its own direction and face wherever it appears. */
+[lang='fa'],
+.persian {
+  font-family: var(--font-persian);
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: 1.9;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  transition: transform var(--d-fast) var(--e-out);
+}
+
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}

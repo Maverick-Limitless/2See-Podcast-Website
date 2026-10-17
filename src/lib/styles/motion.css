@@ -1,0 +1,226 @@
+/* ==========================================================================
+   Motion system
+   --------------------------------------------------------------------------
+   One language, applied in four places only:
+     1. reveal on scroll entry (content arriving, one per group)
+     2. hover on cards (scale, always transform/opacity)
+     3. navigation indicator (underline, transform)
+     4. player placeholder (a single, honest loading affordance)
+
+   Everything uses transform and opacity. Nothing animates layout. Nothing
+   runs on load that blocks reading. prefers-reduced-motion disables all of it
+   at the bottom of this file.
+   ========================================================================== */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  transition: opacity var(--d-reveal) var(--e-out), transform var(--d-reveal) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto;
+}
+
+/* Editorial title reveal: a mask that slides up, words arriving as a line. */
+.reveal-line {
+  overflow: hidden;
+  display: block;
+}
+
+.reveal-line > * {
+  display: block;
+  transform: translateY(105%);
+  opacity: 0;
+  transition: transform var(--d-reveal) var(--e-out), opacity var(--d-reveal) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.is-revealed .reveal-line > *,
+.reveal-line.is-revealed > * {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ---- page transition -------------------------------------------------- */
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+main {
+  animation: page-in var(--d-base) var(--e-out) both;
+}
+
+/* ---- filter transitions ------------------------------------------------ */
+
+.filter-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--d-slow) var(--e-in-out), opacity var(--d-base) var(--e-out);
+  opacity: 0;
+}
+
+.filter-panel[data-open='true'] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.filter-panel > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Crossfade when the mosaic re-orders after a filter change. */
+.mosaic.is-transitioning {
+  transition: opacity var(--d-fast) var(--e-out);
+}
+
+/* ---- player placeholder ------------------------------------------------ */
+
+.player-slate {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--ink-deep);
+  border-radius: var(--radius-media);
+  overflow: hidden;
+  cursor: pointer;
+  border: 0;
+  width: 100%;
+  padding: 0;
+  display: block;
+}
+
+.player-slate__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+.player-slate__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(11, 14, 23, 0.72) 0%, rgba(11, 14, 23, 0.1) 55%);
+}
+
+.player-slate__play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  display: grid;
+  place-items: center;
+  transition: transform var(--d-base) var(--e-spring), background-color var(--d-fast) var(--e-out);
+}
+
+.player-slate__play svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: var(--ink);
+  margin-inline-start: 3px;
+}
+
+.player-slate:hover .player-slate__play {
+  transform: scale(1.08);
+  background: var(--paper);
+}
+
+.player-slate__label {
+  position: absolute;
+  inset-inline: 1.25rem;
+  bottom: 1.125rem;
+  text-align: start;
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.player-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--ink-deep);
+  border-radius: var(--radius-media);
+  overflow: hidden;
+}
+
+.player-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---- marquee-free ticker for the archive header ------------------------ */
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber-deep);
+  animation: pulse-dot 2.4s var(--e-in-out) infinite;
+}
+
+/* ---- reduced motion --------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal],
+  .reveal-line > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pulse-dot {
+    animation: none;
+  }
+
+  .skeleton {
+    animation: none;
+    background: var(--paper-warm);
+  }
+
+  main {
+    animation: none;
+  }
+}

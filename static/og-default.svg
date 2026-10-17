@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0b0e17"/>
+  <text x="90" y="330" font-family="'Helvetica Neue',Arial,sans-serif" font-size="220" font-weight="800" fill="#f3a545" letter-spacing="-10">2</text>
+  <text x="270" y="330" font-family="'Helvetica Neue',Arial,sans-serif" font-size="220" font-weight="800" fill="#f7f3ec" letter-spacing="-10">See Podcast</text>
+  <text x="90" y="420" font-family="Georgia,serif" font-size="44" fill="#f7f3ec" opacity="0.75">Technology, business and policy, made understandable.</text>
+  <rect x="90" y="470" width="200" height="4" fill="#f3a545"/>
+</svg>

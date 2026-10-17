@@ -1,0 +1,41 @@
+{
+  "name": "2see-podcast-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "2See Podcast — independent editorial website concept and single-user publishing panel. Design by Maverick Limitless.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env ./node_modules/vite/bin/vite.js dev",
+    "build": "node --env-file-if-exists=.env ./node_modules/vite/bin/vite.js build",
+    "preview": "node --env-file-if-exists=.env ./node_modules/vite/bin/vite.js preview",
+    "start": "node --env-file-if-exists=.env build/index.js",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "lint": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "testwatch": "vitest",
+    "teste2e": "playwright test",
+    "testall": "vitest run && playwright test",
+    "initadmin": "node --env-file-if-exists=.env scripts/init-admin.mjs",
+    "dbmigrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
+    "dbbackup": "node --env-file-if-exists=.env scripts/backup.mjs",
+    "dbrestore": "node --env-file-if-exists=.env scripts/restore.mjs",
+    "seedepisodes": "node --env-file-if-exists=.env scripts/seed-episodes.mjs",
+    "syncepisodes": "node --env-file-if-exists=.env scripts/sync-episodes.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@sveltejs/adapter-node": "^5.2.12",
+    "@sveltejs/kit": "^2.16.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@types/node": "^22.20.5",
+    "svelte": "^5.19.0",
+    "svelte-check": "^4.1.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vitest": "^3.0.5"
+  }
+}

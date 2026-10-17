@@ -1,0 +1,387 @@
+/* ==========================================================================
+   Discovery grid — Pinterest-inspired justified composition
+   --------------------------------------------------------------------------
+   Not a grid of identical cards. Column spans are assigned per item so the
+   eye lands on featured work first, image-led tiles alternate with text-led
+   tiles, and older content recedes. Spans are decided in the server loader
+   from editorial importance, never left to the browser to guess.
+   ========================================================================== */
+
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 0.5rem + 1.2vw, 1.75rem);
+  grid-auto-flow: row dense;
+}
+
+.mosaic--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .mosaic {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1400px) {
+  .mosaic {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Column spans: an item can hold more than one column, which is what breaks
+   the "row of identical cards" monotony. */
+.mosaic__cell {
+  grid-column: span 1;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .mosaic__cell--wide {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mosaic__cell--wide {
+    grid-column: span 2;
+  }
+
+  .mosaic__cell--feature {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1400px) {
+  .mosaic__cell--feature {
+    grid-column: span 2;
+  }
+
+  .mosaic__cell--wide {
+    grid-column: span 2;
+  }
+}
+
+/* ---- card ------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: transparent;
+  border-radius: var(--radius-card);
+  transition: transform var(--d-base) var(--e-out);
+}
+
+.card--media {
+  overflow: hidden;
+}
+
+/* Hover lift only where a pointer is present, so touch never gets a stuck
+   transform. */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.card__frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper-warm);
+  border-radius: var(--radius-media);
+  aspect-ratio: 16 / 9;
+}
+
+.card--portrait .card__frame {
+  aspect-ratio: 4 / 5;
+}
+
+.card--square .card__frame {
+  aspect-ratio: 1 / 1;
+}
+
+.card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.001);
+  transition: transform var(--d-slow) var(--e-out), filter var(--d-slow) var(--e-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card__image {
+    transform: scale(1.045);
+  }
+}
+
+/* Text-led tile: no image, typography carries it. */
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.875rem 0 0;
+  flex: 1;
+}
+
+.card--media .card__body {
+  padding-inline: 0;
+}
+
+.card__eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--graphite);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.card__eyebrow > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--amber-deep);
+  flex-shrink: 0;
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  line-height: var(--lh-snug);
+  margin: 0;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.mosaic__cell--feature .card__title,
+.card--featured .card__title {
+  font-size: var(--t-h3);
+}
+
+.card__title--persian {
+  font-family: var(--font-persian);
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+.card__summary {
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--graphite);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__summary--persian {
+  font-family: var(--font-persian);
+  line-height: 1.7;
+}
+
+.card__foot {
+  margin-top: auto;
+  padding-top: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  letter-spacing: 0.05em;
+  color: var(--graphite);
+}
+
+.card__foot--meta {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Episode-number badge — the sequence number is real metadata, not decoration. */
+.card__number {
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: var(--track-label);
+  color: var(--paper);
+  background: var(--ink);
+  padding: 0.1875rem 0.4375rem;
+  border-radius: 2px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Stretched link: the whole card is clickable without nesting interactive
+   elements, which keeps the accessibility tree flat and valid. */
+.card__link {
+  position: static;
+}
+
+.card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-media);
+  z-index: 2;
+}
+
+.card--text .card__link::after {
+  border-radius: var(--radius-card);
+}
+
+/* Format markers: the podcast publishes long episodes, weekly briefs and
+   shorts, and readers can tell them apart at a glance. */
+.card__format {
+  position: absolute;
+  z-index: 3;
+  top: 0.625rem;
+  inset-inline-start: 0.625rem;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  color: var(--ink);
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+
+.card__format--brief {
+  background: var(--amber-deep);
+  color: var(--paper);
+}
+
+.card__format--short {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---- featured slot ---------------------------------------------------- */
+
+.slot-featured {
+  position: relative;
+  display: grid;
+  gap: 0;
+  border-radius: var(--radius-media);
+  overflow: hidden;
+  background: var(--ink-deep);
+  color: var(--paper);
+}
+
+.slot-featured__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--ink-soft);
+}
+
+.slot-featured__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot-featured__content {
+  padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  justify-content: center;
+}
+
+.slot-featured__eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.slot-featured__title {
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: 700;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-tight);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.slot-featured__summary {
+  font-size: var(--t-body);
+  line-height: var(--lh-lead);
+  color: rgba(247, 243, 236, 0.78);
+  margin: 0;
+  max-width: 46ch;
+}
+
+.slot-featured__foot {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  color: rgba(247, 243, 236, 0.7);
+  margin-top: 0.25rem;
+}
+
+.slot-featured__cta {
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+  border-bottom: 1px solid var(--amber-bright);
+  padding-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap var(--d-fast) var(--e-out);
+}
+
+.slot-featured__cta:hover {
+  gap: 0.875rem;
+}
+
+@media (min-width: 900px) {
+  .slot-featured {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    min-height: 26rem;
+  }
+
+  .slot-featured__media {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+}

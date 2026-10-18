@@ -51,14 +51,16 @@
     </span>
   {/if}
 
-  <div class="card__body">
+  <div class="card__body" class:card__body--rtl={isPersian}>
     <p class="card__eyebrow">
       {#if episode.episodeNumber !== null}
         <span class="card__number">
           {episode.series === '2See Brief' ? `CW${episode.episodeNumber}` : `EP ${episode.episodeNumber}`}
         </span>
       {/if}
-      {#if episode.category}<span class="card__dot"></span><span>{episode.category}</span>{/if}
+      {#if episode.category && episode.category.toLowerCase() !== (episode.format === 'short' ? 'shorts' : episode.format === 'brief' ? 'weekly brief' : 'conversation')}
+        <span class="card__dot"></span><span>{episode.category}</span>
+      {/if}
     </p>
 
     <h3 class="card__title" class:card__title--persian={isPersian} dir="auto">

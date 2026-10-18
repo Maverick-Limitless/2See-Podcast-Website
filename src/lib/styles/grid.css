@@ -698,3 +698,12 @@
   color: var(--graphite);
   margin-block: 0.25rem 0;
 }
+
+
+/* A Persian card reads in its own direction: metadata order and alignment
+   follow the title, so the card is coherent for its reader, not a mirrored
+   Latin layout. */
+.card__body--rtl {
+  direction: rtl;
+  text-align: right;
+}

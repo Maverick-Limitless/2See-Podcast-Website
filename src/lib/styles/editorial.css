@@ -493,10 +493,13 @@
   color: var(--paper);
   /* The opening band is an inset panel, not an edge-to-edge slab: the page
      keeps its breathing gutter, and the band carries the largest radius in
-     the scale. Overflow hidden keeps the media and caption inside the clip. */
+     the scale. Overflow hidden keeps the media and caption inside the clip.
+     A soft deep shadow lifts the panel off the page, so the content that
+     follows reads as a lower layer rather than a continuation of it. */
   margin: calc(var(--gutter) * 0.75) var(--gutter) 0;
   border-radius: var(--radius-hero);
   overflow: hidden;
+  box-shadow: 0 14px 34px rgba(11, 14, 23, 0.2);
 }
 
 .brief-band__inner {
@@ -626,7 +629,7 @@
   border-radius: var(--radius-hero);
   overflow: hidden;
   background: var(--ink-soft);
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
 }
 
 @media (min-width: 1024px) {
@@ -782,4 +785,10 @@
 .article .share {
   margin-inline: auto;
   max-width: var(--max-text);
+}
+
+
+/* About's reading spine centers on the wide canvas like every other page. */
+.about-prose {
+  margin-inline: auto;
 }

@@ -29,6 +29,7 @@
           <li><a href="/episodes">Episodes</a></li>
           <li><a href="/stories">Stories</a></li>
           <li><a href="/about">About</a></li>
+          <li><a href="/admin">Publisher</a></li>
         </ul>
       </div>
 

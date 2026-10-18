@@ -386,3 +386,10 @@
 .page-title {
   font-size: var(--t-h1);
 }
+
+
+/* The About hero opens without the rule its sibling pages carry: the band
+   below provides the separation. */
+.hero--no-border {
+  border-block-end: 0;
+}

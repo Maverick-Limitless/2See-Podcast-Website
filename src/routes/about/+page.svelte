@@ -12,7 +12,7 @@
   {#if data.origin}<link rel="canonical" href="{data.origin}/about" />{/if}
 </svelte:head>
 
-<section class="hero" style="border-bottom: 0">
+<section class="hero hero--no-border">
   <div class="hero__inner">
     <div data-reveal>
       <p class="hero__eyebrow">About</p>
@@ -22,9 +22,9 @@
   </div>
 </section>
 
-<section class="section section--text" style="padding-top: 0">
+<section class="section section--text section--tight">
   <div class="section__inner">
-    <div class="prose">
+    <div class="prose about-prose">
       {#each paragraphs as paragraph}<p>{paragraph}</p>{/each}
     </div>
 
@@ -40,7 +40,7 @@
     <div class="section__head">
       <div>
         <p class="section__eyebrow">Hosts</p>
-        <h2 class="section__title" style="font-size: var(--t-h3)">Two academic paths</h2>
+        <h2 class="section__title">Two academic paths</h2>
       </div>
     </div>
 

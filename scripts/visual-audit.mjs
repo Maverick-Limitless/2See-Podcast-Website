@@ -69,10 +69,13 @@ for (const viewport of VIEWPORTS) {
   const page = await browser.newPage({
     viewport: { width: viewport.width, height: viewport.height }
   });
+  // Geometry is CSS-driven, so the CDN is not load-bearing here; aborting
+  // keeps the audit deterministic and immune to a stalling thumbnail host.
+  await page.route(/ytimg\.com|ggpht\.com/, (route) => route.abort());
 
   for (const route of ROUTES) {
-    await page.goto(BASE + route, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(250);
+    await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.waitForTimeout(450);
 
     // 1. Horizontal overflow
     const overflow = await page.evaluate(

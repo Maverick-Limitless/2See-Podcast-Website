@@ -28,8 +28,8 @@
     <p class="section__eyebrow">Archive</p>
     <h1 class="section__title page-title">Episodes</h1>
     <p class="section__meta">
-      {episodes.total} published item{episodes.total === 1 ? '' : 's'}. Titles and descriptions are
-      reproduced as published, in their original language.
+      {episodes.total} published item{episodes.total === 1 ? '' : 's'}, reproduced as published in their
+      original language.
     </p>
   </div>
 </section>

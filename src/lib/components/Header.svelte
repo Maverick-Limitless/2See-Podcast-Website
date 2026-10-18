@@ -8,7 +8,7 @@
     loggedIn?: boolean;
   }
 
-  const { site, active = '', loggedIn = false }: Props = $props();
+  const { site, active = '' }: Props = $props();
 
   const links = [
     { href: '/episodes', label: 'Episodes', key: 'episodes' },
@@ -20,8 +20,10 @@
 <header class="masthead">
   <div class="masthead__inner">
     <a class="wordmark" href="/" aria-label={`${site.siteTitle} — home`}>
-      <span class="wordmark__numeral">2</span>
-      <span class="wordmark__text">{site.siteTitle}</span>
+      <span class="wordmark__numeral" aria-hidden="true">2</span>
+      <!-- The numeral completes the name rather than repeating it: the mark
+           reads "2See Podcast" as one lockup, not "2 2See Podcast". -->
+      <span class="wordmark__text">{site.siteTitle.replace(/^2/, '')}</span>
     </a>
 
     <nav class="nav" aria-label="Main">
@@ -39,7 +41,6 @@
         rel="noopener noreferrer"
         target="_blank"
       >YouTube</a>
-      <a class="nav__link" href="/admin">{loggedIn ? 'Panel' : 'Publisher'}</a>
     </div>
   </div>
 </header>

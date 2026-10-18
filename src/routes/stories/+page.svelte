@@ -65,7 +65,7 @@
     {:else}
       <div class="mosaic" class:mosaic--center={stories.items.length <= 2}>
         {#each stories.items as story, index (story.id)}
-          <StoryCard {story} {index} textLed={index % 4 === 0} />
+          <StoryCard {story} {index} textLed={index % 4 === 0 && !story.coverImage} />
         {/each}
       </div>
 

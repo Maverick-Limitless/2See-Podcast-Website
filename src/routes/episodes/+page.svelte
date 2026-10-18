@@ -26,7 +26,7 @@
 <section class="section section--tight">
   <div class="section__inner">
     <p class="section__eyebrow">Archive</p>
-    <h1 class="section__title" style="font-size: var(--t-h1)">Episodes</h1>
+    <h1 class="section__title page-title">Episodes</h1>
     <p class="section__meta">
       {episodes.total} published item{episodes.total === 1 ? '' : 's'}. Titles and descriptions are
       reproduced as published, in their original language.

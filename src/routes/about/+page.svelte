@@ -28,6 +28,13 @@
       {#each paragraphs as paragraph}<p>{paragraph}</p>{/each}
     </div>
 
+    <div class="quote" data-reveal>
+      <blockquote class="quote__text">
+        The podcast brings together two academic paths and one shared love of learning.
+      </blockquote>
+      <p class="quote__source">From the programme's published description</p>
+    </div>
+
     <hr class="section__rule" />
 
     <div class="section__head">
@@ -39,10 +46,10 @@
 
     <div class="mosaic mosaic--single" style="max-width: 42rem">
       {#each site.hosts as host, index (host.latinName || host.name)}
-        <div class="card" data-reveal style="--reveal-delay: {index * 80}ms">
+        <div class="card host-card" data-reveal style="--reveal-delay: {index * 80}ms">
           <div class="card__body">
             <h3 class="card__title">{host.latinName || host.name}</h3>
-            <p class="persian" style="margin: 0">{host.name}</p>
+            <p class="persian host-card__native" dir="rtl">{host.name}</p>
             <p class="card__summary" style="margin-top: 0.75rem">
               {host.role} · {host.credentials}
             </p>

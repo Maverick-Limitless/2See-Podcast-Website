@@ -157,6 +157,32 @@ for (const viewport of VIEWPORTS) {
       }
     }
 
+    // 2b. Route-specific structural checks — each guards a defect this
+    // harness once missed.
+    const structural = await page.evaluate((route) => {
+      const findings = [];
+      if (route === '/about') {
+        const cards = [...document.querySelectorAll('.mosaic--single .card')];
+        const narrow = cards.filter((c) => c.getBoundingClientRect().width < 240);
+        if (narrow.length > 0) findings.push(`about: ${narrow.length} host card(s) narrower than 240px - single-column grid is being overridden`);
+      }
+      if (route === '/episodes') {
+        const active = document.querySelector(".chip[aria-current='true']");
+        if (active) {
+          const bg = getComputedStyle(active).backgroundColor;
+          if (bg === 'rgba(0, 0, 0, 0)') findings.push('episodes: active filter chip is visually indistinguishable');
+        }
+      }
+      if (route === '/') {
+        const band = document.querySelector('.brief-band');
+        if (band && parseFloat(getComputedStyle(band).borderRadius) === 0) findings.push('home: brief band has no radius');
+        const persian = document.querySelector('.brief-band__persian');
+        if (persian && getComputedStyle(persian).textAlign !== 'right') findings.push('home: Persian band text is not right-aligned');
+      }
+      return findings;
+    }, route);
+    for (const f of structural) findings.push(f);
+
     // 3. Direction handling: Persian cards must be isolated
     if (route === '/episodes' || route === '/') {
       const dir = await page.evaluate(() => {

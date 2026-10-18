@@ -155,8 +155,11 @@
   transform-origin: left center;
 }
 
-.nav__link--accent {
-  color: var(--amber-deep);
+/* The external link keeps the standard nav colour: an amber item read as an
+   active-state cue when nothing is active. Hover gives it the same answer
+   every other nav item gives. */
+.nav__link--accent:hover {
+  color: var(--ink);
 }
 
 .masthead__actions {
@@ -259,6 +262,7 @@
   font-size: var(--t-small);
   color: var(--graphite);
   margin: 0;
+  max-width: 60ch;
 }
 
 .section__link {
@@ -374,4 +378,11 @@
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     align-items: start;
   }
+}
+
+
+/* A page's own title: the section-title shape at the page scale, so every
+   archive heading comes from the same token rather than an inline size. */
+.page-title {
+  font-size: var(--t-h1);
 }

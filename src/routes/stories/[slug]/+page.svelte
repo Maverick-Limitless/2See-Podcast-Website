@@ -25,7 +25,7 @@
 <ReadingProgress />
 
 <article class="article">
-  <header class="article__head">
+  <header class="article__head story-band">
     {#if story.category}
       <p class="article__eyebrow">{story.category}</p>
     {/if}
@@ -37,6 +37,7 @@
     <div class="article__byline">
       {#if story.author}<span>By <strong>{story.author}</strong></span>{/if}
       <span>Published <strong>{story.publishedAt ? new Date(story.publishedAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}</strong></span>
+      <span aria-hidden="true">·</span>
       <span><strong>{story.readingMinutes} min read</strong></span>
     </div>
   </header>
@@ -65,6 +66,6 @@
     <button class="share__link" type="button" onclick={() => navigator.clipboard?.writeText(canonical)}>
       Copy link
     </button>
-    <a class="share__link" href="/stories">Back to stories</a>
   </div>
+  <a class="article__return" href="/stories">Back to stories</a>
 </article>

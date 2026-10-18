@@ -30,7 +30,7 @@
      current lead episode answers it behind a glass caption. -->
 <section class="brief-band">
   <div class="brief-band__inner">
-    <div data-reveal>
+    <div class="brief-band__text" data-reveal>
       <p class="brief-band__eyebrow">{introEyebrow}</p>
       <h1 class="brief-band__title">
         <span class="hero-mask">Technology, business</span>
@@ -39,22 +39,6 @@
       <p class="brief-band__lede">
         {data.site.tagline}. Long conversations with guests and entrepreneurs, and a weekly
         briefing on the same territory — both aimed at making complex ideas understandable.
-      </p>
-
-      <div class="brief-band__stats">
-        <div class="brief-band__stat">
-          <span class="brief-band__stat-value">{data.counts.episodesLong.n}</span>
-          <span class="brief-band__stat-label">Long-form episodes</span>
-        </div>
-        <div class="brief-band__stat">
-          <span class="brief-band__stat-value">{data.episodes.total}</span>
-          <span class="brief-band__stat-label">Published entries</span>
-        </div>
-      </div>
-
-      <p class="brief-band__persian">
-        به توسی خوش آمدید؛ جایی که دو دانشجوی ایرانی از استنفورد و هاروارد به فناوری، تجارت و
-        سیاست‌گذاری می‌پردازند.
       </p>
     </div>
 
@@ -95,6 +79,24 @@
         </span>
       </a>
     {/if}
+
+    <div class="brief-band__meta" data-reveal>
+      <div class="brief-band__stats">
+        <div class="brief-band__stat">
+          <span class="brief-band__stat-value">{data.counts.episodesLong.n}</span>
+          <span class="brief-band__stat-label">Long-form episodes</span>
+        </div>
+        <div class="brief-band__stat">
+          <span class="brief-band__stat-value">{data.episodes.total}</span>
+          <span class="brief-band__stat-label">Published entries</span>
+        </div>
+      </div>
+
+      <p class="brief-band__persian">
+        به توسی خوش آمدید؛ جایی که دو دانشجوی ایرانی از استنفورد و هاروارد به فناوری، تجارت و
+        سیاست‌گذاری می‌پردازند.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -116,7 +118,7 @@
 
       <div class="mosaic">
         {#if lead?.summary && lead.summary.trim() !== ''}
-          <aside class="mosaic__cell mosaic__cell--wide" data-reveal>
+          <aside class="mosaic__cell" data-reveal>
             <div class="quote-tile">
               <p class="quote-tile__mark" aria-hidden="true">&ldquo;</p>
               <blockquote class="quote-tile__text">

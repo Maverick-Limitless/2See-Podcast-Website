@@ -93,9 +93,16 @@
   --u12: 6rem;
   --u16: 8rem;
 
-  --radius: 2px;
-  --radius-card: 3px;
-  --radius-media: 4px;
+  /* ---- radius scale -----------------------------------------------------
+     Five steps, one job each. Controls are small and crisp; chips are the
+     only pills; cards and artwork carry the rounded character; the hero
+     media is the largest. The scale is a hierarchy — nothing invents a
+     value outside it, and the pill is reserved so geometry keeps meaning. */
+  --radius-xs: 8px; /* inputs, small controls, notices */
+  --radius-pill: 999px; /* filter chips and compact tags only */
+  --radius-card: 14px; /* cards, panels, tiles */
+  --radius-media: 16px; /* artwork, players, media frames */
+  --radius-hero: 24px; /* the opening band's media, oversized surfaces */
 
   /* ---- motion ----------------------------------------------------------
      A single, documented motion language. Duration, easing, distance and
@@ -118,6 +125,8 @@
 
   --shadow-card: 0 1px 2px rgba(11, 14, 23, 0.04), 0 8px 24px rgba(11, 14, 23, 0.06);
   --shadow-lift: 0 2px 4px rgba(11, 14, 23, 0.06), 0 16px 40px rgba(11, 14, 23, 0.1);
+  /* The resting shadow of a solid tile — a whisper, not a box. */
+  --shadow-rest: 0 1px 2px rgba(11, 14, 23, 0.03), 0 6px 18px rgba(11, 14, 23, 0.05);
 }
 
 /* Typography loading is unavoidable for a bespoke type system, but scope the
@@ -203,7 +212,7 @@ a {
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 1px;
+  border-radius: var(--radius-xs);
 }
 
 ::selection {

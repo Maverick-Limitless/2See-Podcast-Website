@@ -17,7 +17,7 @@
 <section class="section section--tight">
   <div class="section__inner">
     <p class="section__eyebrow">Editorial</p>
-    <h1 class="section__title" style="font-size: var(--t-h1)">Stories</h1>
+    <h1 class="section__title page-title">Stories</h1>
     <p class="section__meta">
       {stories.total} published article{stories.total === 1 ? '' : 's'}. Text, not video — reading
       time is measured from the actual content.
@@ -63,7 +63,7 @@
         </p>
       </div>
     {:else}
-      <div class="mosaic">
+      <div class="mosaic" class:mosaic--center={stories.items.length <= 2}>
         {#each stories.items as story, index (story.id)}
           <StoryCard {story} {index} textLed={index % 4 === 0} />
         {/each}

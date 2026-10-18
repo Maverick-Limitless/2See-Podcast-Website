@@ -163,8 +163,8 @@
   align-items: center;
   gap: 0.75rem 1.25rem;
   margin-top: 1.5rem;
-  padding-block: 1rem;
-  border-block: 1px solid var(--rule);
+  padding-block: 0.875rem;
+  border-block-end: 1px solid var(--rule);
   font-family: var(--font-display);
   font-size: var(--t-small);
   color: var(--graphite);
@@ -274,8 +274,8 @@
   font-family: var(--font-mono);
   font-size: 0.875em;
   background: var(--paper-soft);
-  padding: 0.125em 0.375em;
-  border-radius: 2px;
+  padding: 0.125em 0.4375em;
+  border-radius: 6px;
 }
 
 .prose pre {
@@ -348,7 +348,7 @@
   font-size: var(--t-small);
   color: var(--ink);
   border: 1px solid var(--rule-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   padding: 0.4375rem 0.75rem;
   transition: border-color var(--d-fast) var(--e-out), color var(--d-fast) var(--e-out);
 }
@@ -491,7 +491,12 @@
   position: relative;
   background: var(--ink-deep);
   color: var(--paper);
-  border-bottom: 1px solid var(--rule-ink);
+  /* The opening band is an inset panel, not an edge-to-edge slab: the page
+     keeps its breathing gutter, and the band carries the largest radius in
+     the scale. Overflow hidden keeps the media and caption inside the clip. */
+  margin: calc(var(--gutter) * 0.75) var(--gutter) 0;
+  border-radius: var(--radius-hero);
+  overflow: hidden;
 }
 
 .brief-band__inner {
@@ -504,9 +509,26 @@
   align-items: center;
 }
 
+/* Narrow screens need no placement rules: document order already reads
+   premise, then artwork, then numbers — the first screen is never a wall of
+   text. */
 @media (min-width: 1024px) {
   .brief-band__inner {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas:
+      'text media'
+      'meta media';
+  }
+
+  .brief-band__text {
+    grid-area: text;
+  }
+
+  /* The meta block reads as the lower half of the left column. */
+  .brief-band__meta {
+    grid-area: meta;
+    align-self: end;
+    margin-block-start: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
   }
 }
 
@@ -590,8 +612,9 @@
   font-family: var(--font-persian);
   direction: rtl;
   unicode-bidi: isolate;
+  text-align: right;
   font-size: var(--t-body);
-  line-height: 1.95;
+  line-height: 1.75;
   color: rgba(247, 243, 236, 0.6);
   margin: clamp(1.25rem, 1rem + 1vw, 2rem) 0 0;
   max-width: 46ch;
@@ -600,7 +623,7 @@
 /* The answering image, with its glass caption. */
 .brief-band__media {
   position: relative;
-  border-radius: var(--radius-media);
+  border-radius: var(--radius-hero);
   overflow: hidden;
   background: var(--ink-soft);
   aspect-ratio: 16 / 10;
@@ -624,6 +647,7 @@
   position: absolute;
   inset-inline: 0;
   bottom: 0;
+  border-radius: 0 0 var(--radius-hero) var(--radius-hero);
   padding: 1rem clamp(1rem, 0.75rem + 1vw, 1.5rem) 1.125rem;
   /* Glass over the artwork: the blur reads the image through the panel, the
      dark base guarantees the caption's contrast whatever the frame shows. */
@@ -673,4 +697,89 @@
   color: rgba(247, 243, 236, 0.68);
   margin: 0.5rem 0 0;
   font-variant-numeric: tabular-nums;
+}
+
+
+/* The play answer is unmistakable: a soft ring around the disc so it holds
+   against any frame. */
+.player-slate__play::after {
+  content: '';
+  position: absolute;
+  inset: -0.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(247, 243, 236, 0.35);
+}
+
+
+.brief-band__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+
+/* The return-to-archive path is navigation, not a share action: it sits as a
+   quiet link after the share row, so the primary action stays primary. */
+.article__return {
+  display: inline-block;
+  margin-block-start: 0.75rem;
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  color: var(--graphite);
+  border-block-end: 1px solid var(--rule-strong);
+  padding-block-end: 2px;
+}
+
+.article__return:hover {
+  color: var(--amber-deep);
+  border-block-end-color: var(--amber-deep);
+}
+
+
+/* ==========================================================================
+   The story band — an article's opening panel
+   --------------------------------------------------------------------------
+   Every article opens on the publication's signature navy panel, so the
+   reading page carries the same commitment as the homepage. The head and the
+   prose then share one centered spine, so a wide canvas is composed rather
+   than left-anchored with a blank right half.
+   ========================================================================== */
+
+.story-band {
+  background: var(--ink-deep);
+  color: var(--paper);
+  border-radius: var(--radius-hero);
+  padding: clamp(1.75rem, 1.25rem + 3vw, 3.25rem) clamp(1.25rem, 1rem + 2vw, 3rem);
+  margin-block-start: clamp(1.25rem, 0.75rem + 2vw, 2.5rem);
+}
+
+.story-band .article__eyebrow {
+  color: var(--amber-bright);
+}
+
+.story-band .article__title {
+  color: var(--paper);
+}
+
+.story-band .article__subtitle {
+  color: rgba(247, 243, 236, 0.8);
+}
+
+.story-band .article__byline {
+  color: rgba(247, 243, 236, 0.72);
+  border-block-end-color: var(--rule-ink);
+}
+
+.story-band .article__byline strong {
+  color: var(--paper);
+}
+
+/* One centered spine: the head and the prose column align on the same axis. */
+.article .prose {
+  margin-inline: auto;
+}
+
+.article .share {
+  margin-inline: auto;
+  max-width: var(--max-text);
 }

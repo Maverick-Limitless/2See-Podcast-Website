@@ -73,7 +73,7 @@
   font-weight: 500;
   color: var(--graphite);
   padding: 0.5rem 0.625rem;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   border: 1px solid transparent;
   transition: all var(--d-fast) var(--e-out);
   width: 100%;
@@ -144,6 +144,7 @@
 
 .stat {
   background: var(--surface);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
   padding: 1.125rem;
   display: flex;
   flex-direction: column;
@@ -268,7 +269,7 @@
     display: grid;
     gap: 0.375rem;
     border: 1px solid var(--rule);
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
     padding: 0.75rem;
   }
 
@@ -307,8 +308,8 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.1875rem 0.4375rem;
-  border-radius: 2px;
+  padding: 0.1875rem 0.5625rem;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--rule-strong);
   color: var(--graphite);
   white-space: nowrap;
@@ -379,7 +380,7 @@
   max-width: 25rem;
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-surface);
   padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   box-shadow: var(--shadow-card);
 }

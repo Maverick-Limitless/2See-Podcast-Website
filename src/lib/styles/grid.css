@@ -9,7 +9,9 @@
 
 .mosaic {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* One full-width column on phones: a 170px card cannot carry an episode
+     title. Two columns begin only where a card is wide enough to breathe. */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(0.75rem, 0.5rem + 1.2vw, 1.75rem);
   grid-auto-flow: row dense;
   /* Top-align rather than stretch: a stretched row would pull a short card's
@@ -25,19 +27,25 @@
 }
 
 @media (min-width: 640px) {
-  .mosaic {
+  .mosaic:not(.mosaic--single) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .mosaic:not(.mosaic--single) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .mosaic {
+  .mosaic:not(.mosaic--single) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1400px) {
-  .mosaic {
+  .mosaic:not(.mosaic--single) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
@@ -84,7 +92,8 @@
   height: 100%;
   background: transparent;
   border-radius: var(--radius-card);
-  transition: transform var(--d-base) var(--e-out);
+  transition: transform var(--d-base) var(--e-out),
+    box-shadow var(--d-base) var(--e-out);
 }
 
 .card--media {
@@ -92,10 +101,12 @@
 }
 
 /* Hover lift only where a pointer is present, so touch never gets a stuck
-   transform. */
+   transform. Solid tiles rise and take on a shadow; overlay tiles keep their
+   flat-on-artwork character and instead answer through the scrim deepen. */
 @media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    transform: translateY(-3px);
+  .card:not(.card--overlay):hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
   }
 }
 
@@ -104,6 +115,7 @@
   overflow: hidden;
   background: var(--paper-warm);
   border-radius: var(--radius-media);
+  overflow: hidden;
   aspect-ratio: 16 / 9;
 }
 
@@ -174,6 +186,9 @@
 }
 
 .card__title {
+  /* A grid item's content must never push past its own track. */
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--font-display);
   font-size: var(--t-h4);
   font-weight: 700;
@@ -193,6 +208,9 @@
   font-family: var(--font-persian);
   letter-spacing: 0;
   line-height: 1.5;
+  /* Vazirmatn runs optically larger than Archivo at the same size; a small
+     step down restores equal visual weight between the two scripts. */
+  font-size: 0.94em;
 }
 
 .card__summary {
@@ -236,8 +254,8 @@
   letter-spacing: var(--track-label);
   color: var(--paper);
   background: var(--ink);
-  padding: 0.1875rem 0.4375rem;
-  border-radius: 2px;
+  padding: 0.1875rem 0.5625rem;
+  border-radius: var(--radius-pill);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -272,22 +290,27 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  color: var(--ink);
-  padding: 0.25rem 0.5rem;
-  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink-deep) 64%, transparent);
+  color: var(--paper);
+  padding: 0.25rem 0.6875rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(247, 243, 236, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
+  white-space: nowrap;
   gap: 0.3125rem;
 }
 
 .card__format--brief {
-  background: var(--amber-deep);
+  background: color-mix(in srgb, var(--amber-deep) 74%, transparent);
+  border-color: rgba(247, 243, 236, 0.22);
   color: var(--paper);
 }
 
 .card__format--short {
-  background: var(--ink);
+  background: color-mix(in srgb, var(--ink-deep) 74%, transparent);
   color: var(--paper);
 }
 
@@ -408,6 +431,9 @@
   background: var(--paper-soft);
   border-block-start: 2px solid var(--amber-deep);
   border-radius: var(--radius-card);
+  box-shadow: var(--shadow-rest);
+  transition: transform var(--d-base) var(--e-out),
+    box-shadow var(--d-base) var(--e-out);
   min-height: 14rem;
 }
 
@@ -443,6 +469,23 @@
 
 .card--editorial .card__frame {
   aspect-ratio: 21 / 9;
+}
+
+/* An editorial story is a quiet surface, not floating text: solid paper,
+   the resting shadow, and the same hover lift the tiles answer with. */
+.card--editorial {
+  background: var(--paper-soft);
+  border: 1px solid var(--rule);
+  padding: clamp(0.875rem, 0.75rem + 0.6vw, 1.25rem);
+  box-shadow: var(--shadow-rest);
+}
+
+.card--editorial .card__body {
+  padding: 0.875rem 0 0;
+}
+
+.card--editorial:hover {
+  box-shadow: var(--shadow-lift);
 }
 
 .card--editorial .card__title {
@@ -498,6 +541,7 @@
 
 .card--overlay {
   border-radius: var(--radius-media);
+  overflow: hidden;
   /* An overlay card is its artwork. The card carries the aspect ratio and
      height: auto, so its size derives from its column WIDTH alone. With the
      inherited height:100% a stretched row height would instead derive the
@@ -539,14 +583,16 @@
 
 /* A small tile shows less: on a short artwork the caption must never grow
    past the frame it floats on. Height-driven, not viewport-driven, so it
-   adapts wherever the tile lands. Browsers without container queries keep
-   the full caption. */
+   adapts wherever the tile lands. The 260px tier sits clear of the 220px
+   full-width mobile card, whose exact height falls on the old boundary and
+   missed the compact treatment by a fraction of a pixel. Browsers without
+   container queries keep the full caption. */
 .card--overlay {
   container-type: size;
   container-name: tile;
 }
 
-@container tile (max-height: 220px) {
+@container tile (max-height: 260px) {
   .card--overlay .card__summary,
   .card--overlay .card__foot {
     display: none;
@@ -602,4 +648,53 @@
     );
     padding-block-end: 1.25rem;
   }
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+  .quote-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+
+/* ---- sparse grids ---------------------------------------------------------
+   One or two items must not sit stranded in the far column of a five-column
+   grid. The centered measure frames them as a deliberate focal point. */
+@media (min-width: 640px) {
+  .mosaic--center:not(.mosaic--single) {
+    grid-template-columns: minmax(0, 34rem);
+    justify-content: center;
+  }
+}
+
+
+/* ---- host tiles ------------------------------------------------------------
+   The About page's most important block holds a visible boundary at rest, so
+   the rounded geometry it was given finally reads. */
+
+.host-card {
+  background: var(--paper-soft);
+  border: 1px solid var(--rule);
+  padding: clamp(1rem, 0.875rem + 0.8vw, 1.5rem);
+  box-shadow: var(--shadow-rest);
+  border-radius: var(--radius-media);
+  transition: transform var(--d-base) var(--e-out),
+    box-shadow var(--d-base) var(--e-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .host-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+/* The Persian name is the subtitle of the tile, not a peer of the Latin
+   anchor: smaller, quieter, and still right-aligned by its own direction. */
+.host-card__native {
+  font-size: var(--t-small);
+  color: var(--graphite);
+  margin-block: 0.25rem 0;
 }

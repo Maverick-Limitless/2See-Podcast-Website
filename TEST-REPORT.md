@@ -82,3 +82,26 @@ Testing caught nine real defects, all fixed and re-verified:
   hierarchy and reduced motion are machine-checked; a full human assistive-
   technology audit remains open and is recommended before launch.
 - **Real-user field data**: none exists; no field CWV is claimed.
+
+
+---
+
+## Addendum — productization pass, 2026-10-18
+
+Environment: same as above. All commands run against the rebuilt product.
+
+| Command | Result |
+| --- | --- |
+| `npm run check` (svelte-check + TS) | **Pass.** 0 errors. (Three errors found and fixed during this pass: missing `enhance` import, untyped `requestSubmit`, related episodes without span class.) |
+| `npm test` | **99 passed, 0 failed.** |
+| `npm run test:e2e` | **20 passed, 0 failed** (Chromium). |
+| `npx vite build` | **Pass.** |
+| Visual audit (7 viewports × 5 routes) | **0 overflow, 0 contrast, 0 RTL defects.** |
+| Glass scrim worst-case contrast | Card **5.18:1**, hero **7.88:1** — both pass over pure white. |
+| Vision review of product screenshots | 3 cycles on the exact `docs/assets/screenshots/` images through the image-capable workflow path; every review proved image arrival by quoting visible text. Two "important" findings were confirmed product bugs and fixed (RTL date isolation, hero artwork crop); two were rejected with DOM measurements (Persian block direction — first word measured flush right; story-body cut — frame edge, not layout). Not covered: motion, hover states, Firefox/WebKit. |
+| README/doc command audit | Every `npm run` reference across README and docs resolves against `package.json` (an earlier scan reported `test:e` as unresolved — that was the scanner's own regex dropping digits, not a documentation error). |
+
+Known limitation added this pass: screenshots are JPEG captures at quality
+88; at small sizes Persian glyphs remain harder to read than Latin, which
+also caused one vision-model misread — the underlying rendering is verified
+correct in the DOM.

@@ -9,6 +9,13 @@
   let { data } = $props();
   const episode = $derived(data.episode);
   const isPersian = $derived(episode.language === 'fa');
+  const relatedCards = $derived(
+    data.related.map((related, index) => ({
+      ...related,
+      spanClass: index === 0 ? 'mosaic__cell mosaic__cell--wide' : 'mosaic__cell'
+    }))
+  );
+
   const paragraphs = $derived(
     episode.description
       .split(/\n\s*\n/)
@@ -144,7 +151,7 @@
         </div>
       </div>
       <div class="mosaic">
-        {#each data.related as related, index (related.id)}
+        {#each relatedCards as related, index (related.id)}
           <EpisodeCard episode={related} {index} />
         {/each}
       </div>

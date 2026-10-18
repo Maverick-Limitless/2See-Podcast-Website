@@ -18,13 +18,21 @@ follows.
 | `--ink` | `#0e1116` | Body text — near-black |
 | `--ink-deep` | `#0b0e17` | The show's dark ground, for the featured panel |
 | `--graphite` | `#6e6a63` | Metadata, muted labels |
-| `--amber-deep` | `#b8701a` | The single accent, sampled from the channel's own thumbnails |
+| `--amber-deep` | `#8f5409` | The single accent — sampled from the channel's thumbnails, then deepened to a measured 5.52:1 on ivory |
 | `--amber-bright` | `#f3a545` | Accent on dark surfaces |
 | `--teal` / `--crimson` | `#06685d` / `#b21c2c` | Status colours only (success, destructive) — never decoration |
 
 The amber was sampled from the channel's published thumbnail artwork, which is
 why it is not a generic brand orange. If the programme changes its artwork,
 re-sample: the accent is the one place the site should follow the source.
+
+**Geometry**
+
+The radius scale has five steps, each with one job: `--radius-xs` (8px,
+controls), `--radius-pill` (999px, reserved for filter chips and tags only),
+`--radius-card` (14px, tiles and panels), `--radius-media` (16px, artwork and
+players), `--radius-hero` (24px, the opening band). The pill is deliberately
+scarce: it signals "discrete filter", so nothing else may wear it.
 
 **Type**
 

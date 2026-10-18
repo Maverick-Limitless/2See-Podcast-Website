@@ -1,131 +1,88 @@
-# 2See Podcast — independent website concept
+# 2See Podcast — an independent editorial website concept
 
-A premium editorial website and a minimal, secure single-user publishing panel for
-**2See Podcast**, built as an independent concept project.
+A bespoke, editorial digital home for **2See Podcast**: a Pinterest-inspired discovery archive for episodes, a reading experience for editorial stories, and a minimal single-user publishing panel — in one self-contained codebase.
 
-Design by Maverick Limitless.
+**Design by Maverick Limitless.** This is an independent concept, proposed to the podcast's hosts. It is **not** an official 2See website and is not affiliated with or endorsed by the programme unless expressly authorised.
 
-> This is an independent website concept and is not affiliated with or endorsed by
-> 2See Podcast unless expressly authorised. Episode titles, descriptions, artwork and
-> trademarks belong to their respective owners.
+![The 2See Podcast website — opening screen](docs/assets/screenshots/home-hero.jpg)
 
----
+## The problem / The solution
 
-## What this is
+A podcast's presence can end up scattered: long episodes on YouTube, short clips, and written ideas live in different places, so a listener who wants to *understand the programme*, find a relevant episode, or read around a topic has no single destination.
 
-A Pinterest-inspired digital publication for a podcast that publishes long Persian-language
-conversations and a weekly English briefing, at the meeting point of technology, business
-and policy.
+**The solution** is one independent digital home that gathers the programme's identity, its video archive, its editorial writing, and its story — while YouTube remains the publishing platform where playback happens.
 
-The visual direction is derived from the programme's own artwork: a near-black navy ground,
-warm paper tones, and one restrained amber accent sampled from the channel's thumbnails.
-Type pairs a grotesque display face (Archivo) with a reading serif (Newsreader), and
-Vazirmatn carries Persian text with correct shaping.
-
-## What is included
-
-- Public site: home, episodes archive, episode detail, stories archive, article detail,
-  about, 404, sitemap, robots.txt
-- Publishing panel: stories (manual articles, Markdown) and episodes (manual YouTube entry
-  and automatic synchronisation)
-- Single administrative account, username `tosi-podcast`
-- Installable PWA with an honest offline fallback
-- Automated tests: 99 unit and integration tests, plus browser tests
-
-## Requirements
-
-- Node.js 22.5 or newer (the database is Node's built-in `node:sqlite`, so there is no
-  native module to compile)
-- npm 10 or newer
-
-## Running it
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Copy the environment template and fill in every placeholder
-cp .env.example .env
-
-# 3. Generate a session secret and set ORIGIN (see .env.example)
-openssl rand -base64 48
-
-# 4. Create the one administrator account
-npm run init:admin
-
-# 5. Seed real episode metadata from the channel's public feed (optional)
-npm run seed:episodes
-
-# 6. Run the production build
-npm run build
-
-# 7. Start the server
-npm start
-```
-
-The development server is `npm run dev`.
-
-## How the first admin account works
-
-There is exactly one administrator, and a fresh checkout has **no** working password.
-The account is initialised by the deployment owner, in one of two ways:
-
-**Option A — command line (recommended).** `npm run init:admin` generates a
-cryptographically secure random password, hashes it with scrypt, stores only the hash, and
-prints the password once. Nothing is written to disk and nothing is committed to Git.
-
-**Option B — one-time browser setup.** Set `ADMIN_SETUP_TOKEN` to a random value (a separate
-token from the password), then visit `/setup` once. The route refuses to work once an
-administrator exists and never accepts a second account.
-
-The generated credential can be rotated at any time from Settings inside the panel, which
-also signs out every session.
-
-## Configuring YouTube synchronisation
-
-Episode entry works with no configuration at all: paste a watch, share or `/shorts/` URL into
-the panel and the metadata is yours to edit.
-
-For automatic synchronisation, set one or both of:
-
-- `YOUTUBE_CHANNEL_ID` — enables the public feed, which carries the channel's most recent
-  uploads with no API key. It is limited by YouTube and has no duration data.
-- `YOUTUBE_API_KEY` — enables the YouTube Data API, which can page through the full archive
-  and returns duration.
-
-The API key is never sent to the browser, never logged, and never returned by any endpoint.
-
-## Testing
-
-```bash
-npm test          # unit and integration tests (99 tests)
-npm run test:e2e  # browser tests in Chromium
-npm run check     # types and Svelte checks
-```
-
-See [docs/TESTING.md](docs/TESTING.md) for what is covered and what is not.
-
-## Documentation
-
-| Document | Contents |
+| | |
 | --- | --- |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Stack, data model, request lifecycle |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | First-run setup, secrets, backups, restart |
-| [docs/CONTENT-MANAGEMENT.md](docs/CONTENT-MANAGEMENT.md) | Writing stories and adding episodes |
-| [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md) | Design tokens, colours, type, content |
-| [docs/TESTING.md](docs/TESTING.md) | Test approach and coverage |
-| [docs/SECURITY.md](docs/SECURITY.md) | Security model and audit notes |
-| [docs/RESEARCH.md](docs/RESEARCH.md) | Verified facts and sources |
-| [docs/LICENSING.md](docs/LICENSING.md) | Source-available licence model |
-| [docs/THIRD-PARTY-NOTICES.md](docs/THIRD-PARTY-NOTICES.md) | Fonts and asset licences |
+| ![Episode archive](docs/assets/screenshots/episodes-archive.jpg) | ![Story reading](docs/assets/screenshots/story-detail.jpg) |
+| *Episodes archive — glass-on-image discovery with Persian titles preserved* | *Story reading — editorial layout with the signature opening panel* |
 
-## Licensing
+![Mobile experience](docs/assets/screenshots/home-mobile.jpg)
 
-Source-available under a proprietary licence. Public visibility is not a commercial
-licence; commercial deployment requires explicit written permission. Third-party assets
-(fonts, episode content) remain under their own licences. See
-[docs/LICENSING.md](docs/LICENSING.md).
+## What's included
 
-## Design credit
+**Public site** — home with an editorial opening on the programme's own deep-navy ground; episodes archive with search, format filters and Persian-capable text; episode pages with a privacy-preserving `youtube-nocookie` embed; a stories archive and reading experience; an about page; 404 and error states; sitemap and robots.
 
-Design by Maverick Limitless.
+**Publishing panel** — exactly one administrator; Markdown stories with sanitised preview; episodes added by pasting a YouTube URL *or* synchronised from the channel (Data API when configured, public feed otherwise); drafts, publishing, deletion with confirmation; site settings and password rotation.
+
+**Bilingual by design** — English interface, original Persian titles and descriptions preserved verbatim with correct RTL shaping (Vazirmatn), and mixed-script isolation everywhere.
+
+**Optional, configuration-dependent**: automatic YouTube synchronisation (`YOUTUBE_API_KEY` or `YOUTUBE_CHANNEL_ID`), absolute canonical URLs (`PUBLIC_ORIGIN`).
+
+## Technology
+
+SvelteKit 2 + Svelte 5 + TypeScript, rendered on the server. **SQLite via Node's built-in `node:sqlite`** — no database server, no native compilation, one process. Password hashing with Node's built-in scrypt. Self-hosted fonts. No tracking, no analytics. [Architecture →](docs/ARCHITECTURE.md)
+
+## Run it locally
+
+Requires **Node ≥ 22.5** and npm. From a clean clone:
+
+```bash
+npm install
+cp .env.example .env        # then edit .env — every placeholder is explained there
+npm run dev                 # http://localhost:5173
+```
+
+Two variables matter most for a local run: `ORIGIN` (SvelteKit's same-site origin; without it a plain-HTTP deployment rejects every login) and `SESSION_SECRET` (generate with `openssl rand -base64 48`). All variables are documented in [`.env.example`](.env.example).
+
+## Set up the publishing panel
+
+A fresh checkout has **no working password**. Create the one administrator:
+
+```bash
+npm run init:admin          # prints a cryptographically secure password once
+npm run seed:episodes       # optional: import the channel's recent uploads as drafts
+```
+
+Then sign in at `/admin` with the username `tosi-podcast`. Publishing, editing, synchronisation and settings are covered in [Content management →](docs/CONTENT-MANAGEMENT.md).
+
+## Test and verify
+
+```bash
+npm run check              # svelte-check + TypeScript
+npm test                   # 99 unit + integration tests
+npm run test:e2e            # 20 Playwright browser tests (Chromium)
+npm run build              # production build
+```
+
+What is and isn't covered: [Testing →](docs/TESTING.md) · [Test report →](TEST-REPORT.md)
+
+## Deploy, back up, maintain
+
+One Node process and one SQLite file — any host with a persistent filesystem works. Full guide including domain/HTTPS, backups and health checks: [Deployment →](docs/DEPLOYMENT.md). Design tokens and customisation: [Customization →](docs/CUSTOMIZATION.md).
+
+## Current status and limitations
+
+- Verified research drives all demo content: [Research →](docs/RESEARCH.md)
+- Browser tests run Chromium only; Firefox/WebKit untested
+- No performance scores claimed (no Lighthouse run in the build environment)
+- A human screen-reader audit has not been performed
+- The synchronisation fallback reads the channel's public feed, which carries only recent uploads and no durations
+
+## Ownership, licence, contact
+
+Source-available under a **proprietary licence**: public visibility is not a commercial licence, and commercial deployment requires written permission. [Licensing →](docs/LICENSING.md) · [Third-party notices →](docs/THIRD-PARTY-NOTICES.md) · [Security →](docs/SECURITY.md)
+
+Episode titles, descriptions, artwork, videos and trademarks belong to their respective owners and remain theirs.
+
+— *Design by Maverick Limitless*

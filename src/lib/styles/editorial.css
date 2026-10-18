@@ -634,9 +634,12 @@
 
 @media (min-width: 1024px) {
   .brief-band__media {
-    aspect-ratio: auto;
-    height: 100%;
-    min-height: 22rem;
+    /* Stay at the source ratio: stretching taller crops the artwork's sides
+       and its burned-in labels. The band grows to fit the artwork instead. */
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 0;
+    align-self: start;
   }
 }
 

@@ -3,6 +3,35 @@
 All notable changes to this project. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.1] — 2026-10-18
+
+### Fixed
+
+- Restored the documented npm script names (`test:e2e`, `init:admin`,
+  `db:migrate`, `seed:episodes`, …) after a programmatic rewrite had dropped
+  their colons, leaving every document referencing commands that did not run.
+- Added the required `ORIGIN` variable to `.env.example`: SvelteKit uses it to
+  decide which origin is "same site" for form posts, and a plain-HTTP
+  deployment rejects every login without it.
+- Three `svelte-check` errors from the redesign phases (a missing `enhance`
+  import, an untyped `requestSubmit`, related episodes passed to the card
+  without a span class) — all now zero.
+- Persian episode cards: the publication date is now isolated left-to-right
+  inside the right-to-left caption, so "12 Oct 2026" no longer bidi-reorders
+  to "Oct 2026 12". (Found by the vision model, confirmed by DOM measurement.)
+- The desktop opening panel keeps the artwork at its native 16:9 instead of
+  stretching taller and cropping the artwork's own labels at the sides.
+
+### Added
+
+- Product documentation: a rewritten README with real screenshots, a product
+  brief with graded complexity and risks, and a six-part pitch deck — all
+  built from verified facts only.
+- `docs/assets/screenshots/` — nine real captures of the final build,
+  including the admin panel with test data, reviewed by the vision model over
+  three cycles (findings triaged against the DOM; two false positives
+  rejected with measurements).
+
 ## [1.0.0] — 2026-10-16
 
 First release. Source-available under the proprietary licence in `LICENSE`.

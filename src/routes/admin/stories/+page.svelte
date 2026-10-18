@@ -11,7 +11,7 @@
   let bodyMarkdown = $state('');
 
   function showPreview(): void {
-    document.getElementById('preview-form')?.requestSubmit();
+    (document.getElementById('preview-form') as HTMLFormElement | null)?.requestSubmit();
   }
 
   function formatDate(iso: string | null): string {

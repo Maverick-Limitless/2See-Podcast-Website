@@ -19,5 +19,5 @@
 </script>
 
 {#if formatted}
-  <time datetime={iso ?? ''}>{formatted}</time>
+  <time datetime={iso ?? ''} dir="ltr">{formatted}</time>
 {/if}

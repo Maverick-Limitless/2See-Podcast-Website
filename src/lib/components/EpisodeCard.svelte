@@ -17,9 +17,19 @@
   // text-led card keeps the solid reading surface. The mix is the rhythm.
   const overlay = $derived(!textLed && episode.thumbnail !== '');
 
-  const href = `/episodes/${episode.slug}`;
+  const href = $derived(`/episodes/${episode.slug}`);
   const isPersian = $derived(episode.language === 'fa');
   const title = $derived(episode.originalTitle !== '' ? episode.originalTitle : episode.title);
+
+  const normalise = (value: string) =>
+    value.trim().toLowerCase().replace(/[.،,;:!؟?؛]+$/u, '');
+  // The channel's shorts often carry no description beyond the title, so the
+  // seeded summary can equal the title; rendering both would show the same
+  // line twice, so the redundant summary is dropped.
+  const summaryIsRedundant = $derived(
+    normalise(episode.summary) === normalise(episode.title) ||
+      normalise(episode.summary) === normalise(episode.originalTitle)
+  );
 </script>
 
 <article
@@ -67,7 +77,7 @@
       <a class="card__link" {href} dir="auto">{title}</a>
     </h3>
 
-    {#if episode.summary}
+    {#if episode.summary && !summaryIsRedundant}
       <p class="card__summary" class:card__summary--persian={isPersian} dir="auto">
         {episode.summary}
       </p>

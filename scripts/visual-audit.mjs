@@ -25,7 +25,7 @@ const VIEWPORTS = [
   { name: '1920', width: 1920, height: 1080 }
 ];
 
-const ROUTES = ['/', '/episodes', '/episodes/episode-2', '/stories', '/about'];
+const ROUTES = ['/', '/episodes', '/episodes/episode-2', '/stories', '/about', '/login'];
 
 /** WCAG contrast ratio of the element's own text against its background. */
 function contrastOf(color, bg) {
@@ -64,6 +64,7 @@ const findings = [];
 let overflowDefects = 0;
 let contrastDefects = 0;
 let rtlGaps = 0;
+let touchDefects = 0;
 
 for (const viewport of VIEWPORTS) {
   const page = await browser.newPage({
@@ -197,6 +198,62 @@ for (const viewport of VIEWPORTS) {
         findings.push(`RTL ${viewport.name}px ${route}: Persian text resolves to ltr`);
       }
     }
+
+    // 4. Touch targets (mobile widths only): every visible control should be
+    //    comfortably tappable — the design target is 44 × 44 CSS pixels.
+    //    Pseudo-element hit areas count: stretched links (a ::after covering
+    //    the card) and expanded hit areas (::before extending past the box)
+    //    are measured at their effective size.
+    if (['320', '375', '430'].includes(viewport.name)) {
+      const targets = await page.evaluate(() => {
+        const selector =
+          'button, input, select, textarea, a.btn, .chip, .nav__link, .skip-link, .card__link, [role="button"]';
+        const out = [];
+        for (const el of document.querySelectorAll(selector)) {
+          const rect = el.getBoundingClientRect();
+          const style = getComputedStyle(el);
+          if (rect.width === 0 || rect.height === 0) continue;
+          if (style.visibility === 'hidden' || style.display === 'none') continue;
+          if (el.closest('.visually-hidden')) continue;
+          const px = (value) => (value.endsWith('px') ? parseFloat(value) : null);
+          let width = rect.width;
+          let height = rect.height;
+          for (const pseudo of ['::before', '::after']) {
+            const s = getComputedStyle(el, pseudo);
+            if (s.position !== 'absolute') continue;
+            const top = px(s.top);
+            const bottom = px(s.bottom);
+            const left = px(s.left);
+            const right = px(s.right);
+            const stretched = top === 0 && bottom === 0 && left === 0 && right === 0;
+            if (stretched && el.offsetParent instanceof HTMLElement) {
+              const host = el.offsetParent.getBoundingClientRect();
+              width = Math.max(width, host.width);
+              height = Math.max(height, host.height);
+            } else {
+              if (top !== null && top < 0) height += -top;
+              if (bottom !== null && bottom < 0) height += -bottom;
+              if (left !== null && left < 0) width += -left;
+              if (right !== null && right < 0) width += -right;
+            }
+          }
+          out.push({
+            what: `${el.tagName.toLowerCase()}.${String(el.className).slice(0, 30)}`,
+            w: Math.round(width),
+            h: Math.round(height)
+          });
+        }
+        return out;
+      });
+      for (const target of targets) {
+        if (target.h < 44 || target.w < 44) {
+          touchDefects += 1;
+          findings.push(
+            `TOUCH ${viewport.name}px ${route}: ${target.what} is ${target.w}x${target.h}px (target 44x44)`
+          );
+        }
+      }
+    }
   }
   await page.close();
 }
@@ -235,5 +292,6 @@ console.log(`Routes: ${ROUTES.join(', ')}`);
 console.log(`Overflow defects: ${overflowDefects}`);
 console.log(`Contrast defects: ${contrastDefects}`);
 console.log(`RTL defects: ${rtlGaps}`);
+console.log(`Touch-target defects: ${touchDefects}`);
 console.log(findings.length === 0 ? 'No measured defects.' : 'Findings:');
 for (const f of findings) console.log('  - ' + f);

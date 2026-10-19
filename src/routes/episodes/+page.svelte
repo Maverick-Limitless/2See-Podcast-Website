@@ -1,5 +1,7 @@
 <script lang="ts">
   import EpisodeCard from '$lib/components/EpisodeCard.svelte';
+  import { goto } from '$app/navigation';
+  import { buildArchiveUrl } from '$lib/utils/archive-url';
 
   let { data } = $props();
 
@@ -12,7 +14,17 @@
 
   const episodes = $derived(data.episodes);
   const filters = $derived(data.filters);
-  let pending = $state(false);
+
+  // "Load more" keeps the whole filter state in the URL, so the next batch of
+  // a search result is still that search's next batch.
+  const nextPageHref = $derived(
+    buildArchiveUrl('/episodes', {
+      page: episodes.page + 1,
+      query: filters.query,
+      category: filters.category,
+      format: filters.format
+    })
+  );
 </script>
 
 <svelte:head>
@@ -30,6 +42,9 @@
     <p class="section__meta">
       {episodes.total} published item{episodes.total === 1 ? '' : 's'}, reproduced as published in their
       original language.
+    </p>
+    <p class="visually-hidden" role="status">
+      Showing {episodes.items.length} of {episodes.total} episodes.
     </p>
   </div>
 </section>
@@ -69,7 +84,11 @@
     {#each formats as format (format.value)}
       <a
         class="chip"
-        href="/episodes?format={format.value}{filters.query ? `&q=${encodeURIComponent(filters.query)}` : ''}"
+        href={buildArchiveUrl('/episodes', {
+          format: format.value,
+          query: filters.query,
+          category: filters.category
+        })}
         aria-current={filters.format === format.value ? 'true' : undefined}
       >
         {format.label}
@@ -106,7 +125,22 @@
 
       {#if episodes.hasMore}
         <div style="margin-top: 2.5rem; display: flex; justify-content: center">
-          <a class="btn btn--ghost" href="/episodes?page={episodes.page + 1}">
+          <a
+            class="btn btn--ghost"
+            href={nextPageHref}
+            onclick={(event) => {
+              // Modifier clicks keep their native behaviour (new tab, window).
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              // The archive grows in place: hold the reader's exact position
+              // across the batch append, whatever the browser does with the
+              // replaced control's focus.
+              const position = window.scrollY;
+              goto(nextPageHref, { noScroll: true, keepFocus: true }).then(() => {
+                window.scrollTo(0, position);
+              });
+            }}
+          >
             Load {Math.min(episodes.pageSize, episodes.total - episodes.items.length)} more
           </a>
         </div>

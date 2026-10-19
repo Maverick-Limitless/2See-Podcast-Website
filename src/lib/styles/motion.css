@@ -257,8 +257,14 @@ main {
    first paint. */
 
 .hero-mask {
-  overflow: hidden;
   display: block;
+  /* Ink room without geometry change: the display leading is 0.96 and
+     Archivo's descender ink reaches ~18px past the line box, so a plain
+     overflow:hidden mask would clip a descender landing on a mask's last
+     wrapped line. A clip margin widens the clip box only — line positions,
+     the block's height and the reveal geometry are untouched. */
+  overflow: clip;
+  overflow-clip-margin: 0.25em;
 }
 
 .hero-mask > * {

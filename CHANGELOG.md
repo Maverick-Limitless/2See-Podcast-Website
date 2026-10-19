@@ -3,6 +3,57 @@
 All notable changes to this project. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.2] — 2026-10-19
+
+### Fixed
+
+- The development secret fallback now covers CSRF signing. A server started
+  with no secrets at all booted but then failed every request with "CSRF
+  secret is not configured" — `npm run dev` on a clean checkout could not
+  render a page.
+- "Load more" on the episodes and stories archives appends the next batch in
+  place instead of replacing the list with a bare page 2, keeps the active
+  search and filters in the URL, and holds the reader's exact position across
+  the append. Browser Back returns to the first batch.
+- The episode card and the episode page no longer render a summary that
+  merely repeats the title — ten of the channel's fifteen videos carry no
+  description beyond the title — and the episode page no longer doubles the
+  format name with a matching category badge.
+- The display headline's reveal masks clip with `overflow-clip-margin:
+  0.25em`: Archivo's descender ink reaches about 18px past the 0.96 line
+  box, and a descender landing on a mask's last wrapped line would have been
+  cut. The block's geometry is unchanged.
+- Phone navigation reaches the 44px touch-target height through an expanded
+  hit area, without changing the visual size of the links.
+- The glass caption scrim's gradient floor was raised to alpha 0.68: the
+  summary-dedup change made overlay captions shorter, which sat their text
+  higher in the old gradient where the worst-case (pure-white thumbnail)
+  contrast fell to 4.34:1, below WCAG AA. Measured worst-case contrast is now
+  6.23:1 (`scripts/scrim-contrast.mjs`).
+- Admin tables label their actions column for screen readers, and the
+  episodes table's date column is headed "Published at" so it no longer
+  reads as a second status column.
+
+### Changed
+
+- The browser test suite is fully self-contained and reproducible.
+  `scripts/e2e-setup.mjs` rebuilds the test database from the committed
+  fixture `tests/fixtures/e2e-episodes.json` (the channel's real, published
+  metadata) and creates the administrator with a deterministic test password
+  through the production `init-admin` script, and `playwright.config.ts`
+  boots the server with explicit test-only secrets. Previously every "green"
+  run had in fact been testing a manually started server; the committed
+  harness could not start its own.
+- Test counts: 106 unit + integration, 21 browser (127 automated tests).
+- The documentation gallery was re-captured from the final build: 14 routes
+  and states including the mobile archive, the sign-in screen, both editors,
+  the empty-search state and the appended "load more" state, with a
+  screenshot index at `docs/assets/screenshots/README.md`.
+- New measurement harnesses: `scripts/visual-audit.mjs` checks touch targets
+  at mobile widths and covers the sign-in route; `scripts/design-audit.mjs`
+  records the design system's real proportions; `scripts/capture-screenshots.mjs`
+  makes the gallery reproducible.
+
 ## [1.0.1] — 2026-10-18
 
 ### Fixed

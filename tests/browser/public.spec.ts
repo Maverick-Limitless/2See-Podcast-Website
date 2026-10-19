@@ -91,6 +91,46 @@ test.describe('public site', () => {
     await expect(page.getByRole('heading', { name: 'Nothing matched' })).toBeVisible();
   });
 
+  test('load more appends the next batch, then Back returns to the first', async ({ page }) => {
+    // Third-party thumbnails are not under test here; blocking them keeps the
+    // layout deterministic while the archive grows.
+    await page.route(/ytimg\.com/, (route) => route.abort());
+    await page.goto('/episodes');
+    const titles = page.locator('.card__title');
+    await expect(titles).toHaveCount(12);
+    const firstTitle = (await titles.first().textContent()) ?? '';
+
+    // A real user clicks a control they can already see. Scrolling it into
+    // view first also keeps Playwright's own click auto-scroll from changing
+    // the position this test is guarding.
+    const moreLink = page.getByRole('link', { name: /Load \d+ more/ });
+    await moreLink.evaluate((el) => el.scrollIntoView({ block: 'end' }));
+    await page.waitForTimeout(900); // the document scrolls smoothly by design
+
+    // The stable invariant: the card the reader is looking at keeps its
+    // exact position in the viewport across the batch append.
+    const reference = page.locator('.card').nth(5);
+    const referenceTop = await reference.evaluate((el) => el.getBoundingClientRect().top);
+
+    await moreLink.click();
+    await expect(page).toHaveURL(/\/episodes\?page=2$/);
+    await expect(titles).toHaveCount(15);
+    // The first batch is still there, in the same order, and nothing repeats.
+    await expect(titles.first()).toHaveText(firstTitle);
+    const texts = await titles.allTextContents();
+    expect(new Set(texts).size).toBe(texts.length);
+    // The view does not jump to the top: the same card is still in place.
+    const afterTop = await reference.evaluate((el) => el.getBoundingClientRect().top);
+    expect(Math.abs(afterTop - referenceTop)).toBeLessThan(60);
+    // The control disappears once the archive is fully loaded.
+    await expect(page.getByRole('link', { name: /Load \d+ more/ })).toHaveCount(0);
+
+    // Browser Back returns to the first batch, not a broken navigation state.
+    await page.goBack();
+    await expect(page).toHaveURL(/\/episodes$/);
+    await expect(titles).toHaveCount(12);
+  });
+
   test('an episode detail page shows metadata and the YouTube route', async ({ page }) => {
     const watch = watchPage(page);
     await page.goto('/episodes');

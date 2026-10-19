@@ -6,6 +6,8 @@ A bespoke, editorial digital home for **2See Podcast**: a Pinterest-inspired dis
 
 ![The 2See Podcast website — opening screen](docs/assets/screenshots/home-hero.jpg)
 
+*Every image in this README is a real capture of the running build. The complete gallery — every route, mobile and desktop, including the publishing panel and the empty and load-more states — is in the [screenshot index](docs/assets/screenshots/README.md).*
+
 ## The problem / The solution
 
 A podcast's presence can end up scattered: long episodes on YouTube, short clips, and written ideas live in different places, so a listener who wants to *understand the programme*, find a relevant episode, or read around a topic has no single destination.
@@ -19,9 +21,14 @@ A podcast's presence can end up scattered: long episodes on YouTube, short clips
 
 ![Mobile experience](docs/assets/screenshots/home-mobile.jpg)
 
+| | |
+| --- | --- |
+| ![Episodes archive, mobile](docs/assets/screenshots/episodes-archive-mobile.jpg) | ![Empty search state](docs/assets/screenshots/episodes-search-empty.jpg) |
+| *Mobile archive — nothing clipped at phone width* | *Search that matches nothing — a real empty state* |
+
 ## What's included
 
-**Public site** — home with an editorial opening on the programme's own deep-navy ground; episodes archive with search, format filters and Persian-capable text; episode pages with a privacy-preserving `youtube-nocookie` embed; a stories archive and reading experience; an about page; 404 and error states; sitemap and robots.
+**Public site** — home with an editorial opening on the programme's own deep-navy ground; episodes archive with search, format filters, an in-place "load more" and Persian-capable text; episode pages with a privacy-preserving `youtube-nocookie` embed; a stories archive and reading experience; an about page; 404 and error states; sitemap and robots.
 
 **Publishing panel** — exactly one administrator; Markdown stories with sanitised preview; episodes added by pasting a YouTube URL *or* synchronised from the channel (Data API when configured, public feed otherwise); drafts, publishing, deletion with confirmation; site settings and password rotation.
 
@@ -60,8 +67,10 @@ Then sign in at `/admin` with the username `tosi-podcast`. Publishing, editing, 
 
 ```bash
 npm run check              # svelte-check + TypeScript
-npm test                   # 99 unit + integration tests
-npm run test:e2e            # 20 Playwright browser tests (Chromium)
+npm test                   # 106 unit + integration tests
+npm run test:e2e            # 21 Playwright browser tests (Chromium) — fully
+                           # self-contained: recreates its test database from
+                           # a committed fixture and starts its own server
 npm run build              # production build
 ```
 

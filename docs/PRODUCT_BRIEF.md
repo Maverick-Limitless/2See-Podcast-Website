@@ -43,7 +43,7 @@ These are potential values of the design, not proven outcomes. No audience, grow
 
 ## Implemented capability vs future
 
-**Implemented and verified in this build:** public site, bilingual typography and RTL, single-admin panel, manual episode entry with duplicate prevention, feed/API synchronisation into drafts, Markdown stories with sanitised rendering, reading-time from real content, sitemap/robots, installable PWA, 119 automated tests.
+**Implemented and verified in this build:** public site, bilingual typography and RTL, single-admin panel, manual episode entry with duplicate prevention, feed/API synchronisation into drafts, Markdown stories with sanitised rendering, reading-time from real content, in-place cumulative "load more" on both archives, sitemap/robots, installable PWA, 127 automated tests.
 
 **Future / out of scope for v1:** independent media hosting, comments or accounts for readers, analytics, multi-language interface localisation, a mobile app.
 

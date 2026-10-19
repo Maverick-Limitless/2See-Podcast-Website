@@ -104,7 +104,9 @@ export function listStories(filters: StoryFilters): StoryListResult {
   const pageSize = Math.min(50, Math.max(1, filters.pageSize ?? 12));
   const query = (filters.query ?? '').trim();
   const state = filters.state ?? 'published';
-  const offset = (page - 1) * pageSize;
+  // Cumulative pagination, mirroring the episodes archive: page N means
+  // "the first N pages", so "load more" appends in place.
+  const limit = page * pageSize;
 
   const where: string[] = [];
   const params: (string | number)[] = [];
@@ -133,7 +135,7 @@ export function listStories(filters: StoryFilters): StoryListResult {
         ORDER BY featured DESC, published_at DESC, created_at DESC
         LIMIT ? OFFSET ?`
     )
-    .all(...params, pageSize, offset) as unknown as StoryRow[];
+    .all(...params, limit, 0) as unknown as StoryRow[];
 
   const categories = (
     db
@@ -170,7 +172,7 @@ export function listStories(filters: StoryFilters): StoryListResult {
     total: countRow.total,
     page,
     pageSize,
-    hasMore: offset + rows.length < countRow.total,
+    hasMore: limit < countRow.total,
     query,
     categories
   };

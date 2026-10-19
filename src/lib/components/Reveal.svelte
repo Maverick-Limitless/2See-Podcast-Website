@@ -14,6 +14,9 @@
 
   const { index = 0, step = 55, immediate = false, as = 'div', children }: Props = $props();
 
+  // `immediate` is a mount-time instruction, not reactive state: the decision
+  // is made once here and re-checked in onMount, never re-run per prop change.
+  // svelte-ignore state_referenced_locally
   let visible = $state(immediate);
   let node = $state<HTMLElement | null>(null);
 

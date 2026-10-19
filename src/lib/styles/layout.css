@@ -64,6 +64,15 @@
     letter-spacing: 0.08em;
   }
 
+  /* Phone navigation reaches the 44px touch-target height without inflating
+     the visual box or pulling the underline away from the text: the hit area
+     grows around the link instead. */
+  .nav__link::before {
+    content: '';
+    position: absolute;
+    inset-block: -6px;
+  }
+
   /* The YouTube link is already in the footer, the about page and the hero;
      repeating it here is what pushed the row past the viewport. */
   .nav__link--accent {

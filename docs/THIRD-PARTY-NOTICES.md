@@ -45,6 +45,10 @@ script.
 - **Episode metadata**: titles, descriptions and publication dates come from
   the channel's public feed and are reproduced verbatim, in the original
   Persian or English. No translation is invented.
+- **Test fixture** (`tests/fixtures/e2e-episodes.json`): the channel's public
+  episode metadata, reproduced so the browser test suite runs deterministically
+  and offline. It contains the same published titles, descriptions and dates
+  the synchroniser imports, and nothing unreleased or private.
 
 ## Trademarks
 

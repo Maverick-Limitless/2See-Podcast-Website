@@ -26,6 +26,26 @@
   const canonical = $derived(
     data.origin ? `${data.origin}/episodes/${episode.slug}` : `${page.url.origin}/episodes/${episode.slug}`
   );
+
+  const normalise = (value: string) =>
+    value.trim().toLowerCase().replace(/[.،,;:!؟?؛]+$/u, '');
+  // Same rule as the episode card: a summary that merely repeats the title
+  // adds a duplicated line, and a category that restates the format's
+  // canonical name adds a duplicated badge segment.
+  const summaryRepeatsTitle = $derived(
+    normalise(episode.summary) === normalise(episode.title) ||
+      normalise(episode.summary) === normalise(episode.originalTitle)
+  );
+  const formatCategoryName = $derived(
+    episode.format === 'short'
+      ? 'shorts'
+      : episode.format === 'brief'
+        ? 'weekly brief'
+        : 'conversation'
+  );
+  const showCategory = $derived(
+    episode.category !== '' && episode.category.toLowerCase() !== formatCategoryName
+  );
 </script>
 
 <svelte:head>
@@ -50,12 +70,12 @@
       {:else}
         {episode.format === 'short' ? 'Short' : 'Episode'}
       {/if}
-      {#if episode.category} · {episode.category}{/if}
+      {#if showCategory} · {episode.category}{/if}
     </p>
     <h1 class="article__title" class:persian={isPersian}>
       {episode.originalTitle || episode.title}
     </h1>
-    {#if episode.summary && !episode.description.includes(episode.summary.slice(0, 60))}
+    {#if episode.summary && !summaryRepeatsTitle && !episode.description.includes(episode.summary.slice(0, 60))}
       <p class="article__subtitle" class:persian={isPersian}>{episode.summary}</p>
     {/if}
 

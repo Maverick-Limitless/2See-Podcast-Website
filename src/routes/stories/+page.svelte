@@ -1,9 +1,21 @@
 <script lang="ts">
   import StoryCard from '$lib/components/StoryCard.svelte';
+  import { goto } from '$app/navigation';
+  import { buildArchiveUrl } from '$lib/utils/archive-url';
 
   let { data } = $props();
   const stories = $derived(data.stories);
   const filters = $derived(data.filters);
+
+  // "Load more" keeps the search state in the URL, so the next batch of a
+  // search result is still that search's next batch.
+  const nextPageHref = $derived(
+    buildArchiveUrl('/stories', {
+      page: stories.page + 1,
+      query: filters.query,
+      category: filters.category
+    })
+  );
 </script>
 
 <svelte:head>
@@ -21,6 +33,9 @@
     <p class="section__meta">
       {stories.total} published article{stories.total === 1 ? '' : 's'}. Text, not video — reading
       time is measured from the actual content.
+    </p>
+    <p class="visually-hidden" role="status">
+      Showing {stories.items.length} of {stories.total} stories.
     </p>
   </div>
 </section>
@@ -71,7 +86,22 @@
 
       {#if stories.hasMore}
         <div style="margin-top: 2.5rem; display: flex; justify-content: center">
-          <a class="btn btn--ghost" href="/stories?page={stories.page + 1}">
+          <a
+            class="btn btn--ghost"
+            href={nextPageHref}
+            onclick={(event) => {
+              // Modifier clicks keep their native behaviour (new tab, window).
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              // The archive grows in place: hold the reader's exact position
+              // across the batch append, whatever the browser does with the
+              // replaced control's focus.
+              const position = window.scrollY;
+              goto(nextPageHref, { noScroll: true, keepFocus: true }).then(() => {
+                window.scrollTo(0, position);
+              });
+            }}
+          >
             Load {Math.min(stories.pageSize, stories.total - stories.items.length)} more
           </a>
         </div>

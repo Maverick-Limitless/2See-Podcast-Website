@@ -152,7 +152,9 @@ export function listEpisodes(filters: EpisodeFilters): EpisodeListResult {
   const query = (filters.query ?? '').trim();
   const state = filters.state ?? 'published';
   const format = filters.format ?? 'all';
-  const offset = (page - 1) * pageSize;
+  // Cumulative pagination: page N means "the first N pages", so "load more"
+  // appends in place and every ?page= URL is a complete, shareable state.
+  const limit = page * pageSize;
 
   const where: string[] = [];
   const params: (string | number)[] = [];
@@ -184,7 +186,7 @@ export function listEpisodes(filters: EpisodeFilters): EpisodeListResult {
       `SELECT ${COLUMNS} FROM episodes ${clause}
         ORDER BY featured DESC, published_at DESC LIMIT ? OFFSET ?`
     )
-    .all(...params, pageSize, offset) as unknown as EpisodeRow[];
+    .all(...params, limit, 0) as unknown as EpisodeRow[];
 
   const categories = (
     db
@@ -201,7 +203,7 @@ export function listEpisodes(filters: EpisodeFilters): EpisodeListResult {
     total: countRow.total,
     page,
     pageSize,
-    hasMore: offset + rows.length < countRow.total,
+    hasMore: limit < countRow.total,
     query,
     categories
   };

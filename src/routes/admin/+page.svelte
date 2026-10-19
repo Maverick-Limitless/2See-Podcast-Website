@@ -63,9 +63,11 @@
   </div>
   <div class="panel__body">
     <p style="margin: 0 0 0.5rem">{data.sync.lastMessage || 'No run yet.'}</p>
-    <p class="table__meta" style="margin: 0">
-      {lastRun} · source: {data.sync.source ?? 'none'} · {data.sync.lastCreatedCount} created,
-      {data.sync.lastUpdatedCount} refreshed
-    </p>
+    {#if data.sync.lastRunAt}
+      <p class="table__meta" style="margin: 0">
+        {lastRun} · source: {data.sync.source ?? 'none'} · {data.sync.lastCreatedCount} created,
+        {data.sync.lastUpdatedCount} refreshed
+      </p>
+    {/if}
   </div>
 </div>

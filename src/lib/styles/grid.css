@@ -504,7 +504,10 @@
 /* ---- glass-on-image cards --------------------------------------------------
    For image-led tiles the text moves onto the artwork inside a bottom glass
    panel: the blur reads the thumbnail through the panel, and the dark
-   gradient base guarantees the caption's contrast over any frame. This is
+   gradient base guarantees the caption's contrast over any frame. The floor
+   of that gradient must stay at alpha 0.68: over a worst-case pure-white
+   thumbnail, that is the minimum under which the caption still clears WCAG
+   AA (verified by scripts/scrim-contrast.mjs). This is
    what makes the grid feel curated rather than "image block, text below".
    Text-led and quote tiles keep their solid paper surface, so glass keeps
    meaning: it appears exactly where content floats over imagery. */
@@ -518,9 +521,9 @@
   gap: 0.375rem;
   background: linear-gradient(
     to top,
-    rgba(11, 14, 23, 0.88),
-    rgba(11, 14, 23, 0.42) 68%,
-    transparent
+    rgba(11, 14, 23, 0.92),
+    rgba(11, 14, 23, 0.7) 40%,
+    rgba(11, 14, 23, 0.68)
   );
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));

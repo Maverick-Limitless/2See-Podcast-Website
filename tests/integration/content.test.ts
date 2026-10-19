@@ -219,11 +219,19 @@ describe('search and filters', () => {
     expect(listEpisodes({ format: 'short' }).total).toBe(0);
   });
 
-  it('paginates without duplicating rows', () => {
+  it('paginates cumulatively: "load more" grows the archive in place', () => {
     const page1 = listEpisodes({ pageSize: 1, page: 1 });
     const page2 = listEpisodes({ pageSize: 1, page: 2 });
-    expect(page1.items[0]?.id).not.toBe(page2.items[0]?.id);
+    expect(page1.items).toHaveLength(1);
     expect(page1.hasMore).toBe(true);
+    // Page 2 still begins with page 1's item — the next batch is appended to
+    // the same archive, never a replacement slice of it.
+    expect(page2.items[0]?.id).toBe(page1.items[0]?.id);
+    expect(new Set(page2.items.map((episode) => episode.id)).size).toBe(page2.items.length);
+    // A page beyond the last simply shows everything, and never reports more.
+    const beyond = listEpisodes({ pageSize: 1, page: page1.total + 5 });
+    expect(beyond.items).toHaveLength(page1.total);
+    expect(beyond.hasMore).toBe(false);
   });
 
   it('returns nothing for an unmatched query', () => {

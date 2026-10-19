@@ -6,17 +6,24 @@ except where a network boundary requires it.
 ## Commands
 
 ```bash
-npm test          # Vitest: 99 unit + integration tests
-npm run test:e2e  # Playwright: 20 browser tests (Chromium)
+npm test          # Vitest: 106 unit + integration tests
+npm run test:e2e  # Playwright: 21 browser tests (Chromium)
 npm run check     # svelte-check + TypeScript
 ```
 
-The browser suite expects a running production build with a test database.
-`npx playwright test` starts one itself (see `playwright.config.ts`); when a
-server is already running, set `E2E_SKIP_WEBSERVER=1` and `E2E_BASE_URL`.
+The browser suite is fully self-contained. `scripts/e2e-setup.mjs`, run
+automatically by `playwright.config.ts` before the server boots, recreates the
+test database from the committed fixture `tests/fixtures/e2e-episodes.json`
+(the channel's real, published episode metadata) and creates the single
+administrator through the same `init-admin` script production uses. From a
+clean checkout, `npm run build && npm run test:e2e` is all the suite needs.
+When a server is already running, set `E2E_SKIP_WEBSERVER=1` and
+`E2E_BASE_URL` to test against it instead.
 
-Test credentials: the browser suite reads `E2E_ADMIN_PASSWORD` from the
-environment. No real credential appears in any file.
+Test credentials: the browser suite signs in as `tosi-podcast` with
+`local-e2e-password-placeholder`, unless `E2E_ADMIN_PASSWORD` says otherwise.
+It is a deterministic test value — never a real credential, and it appears in
+no production path.
 
 ## Layer 1 — unit (Vitest)
 
@@ -38,6 +45,15 @@ Persian input, and plain-text extraction are covered.
 **YouTube client (11 tests).** ISO-8601 durations, display formatting, and the
 public-feed parser: entity decoding, limit honoured, malformed entries skipped,
 empty feeds.
+
+**Configuration secret fallback (4 tests).** The clean-checkout path: both
+secrets bootstrapped together (a server that boots must also be able to sign
+CSRF tokens), single-secret derivation, a dedicated CSRF secret kept, and the
+production refusal to run without a real session secret.
+
+**Archive URLs (3 tests).** "Load more" and the format chips build their URLs
+through one helper that carries the whole filter state, so pagination can never
+silently drop an active search.
 
 ## Layer 2 — integration (Vitest, real SQLite)
 
@@ -67,15 +83,19 @@ Every file gets a fresh temporary database, so no test touches `./data`.
 - Stories: body rendered once at write time, reading time from real content,
   draft/publish/unpublish transitions, deterministic unique slugs, XSS-in-body
   stored inert, featured-first ordering, deletion.
-- Search: Persian query across titles, format filters, pagination without
-  duplicates, empty results.
+- Search: Persian query across titles, format filters, cumulative pagination
+  ("load more" appends the next batch in place, without duplicating rows, and
+  a page beyond the last shows everything), empty results.
 - Cache invalidation: the revision token changes when content changes.
 
 ## Layer 3 — browser (Playwright, real Chromium)
 
-**Public site (11 tests).** The homepage renders the hero with real Persian
+**Public site (12 tests).** The homepage renders the hero with real Persian
 content and no fabricated engagement metrics; navigation to the archive;
-Persian search filters and clears with a real empty state; an episode page
+Persian search filters and clears with a real empty state; "load more"
+appends the next batch beneath the first (no duplicates, the reader's
+position in the viewport is held, the control disappears when the archive is
+exhausted, and browser Back returns to the first batch); an episode page
 shows metadata, a thumbnail-first player (no iframe until the visitor clicks,
 then the `youtube-nocookie` embed), and the official YouTube link; keyboard
 navigation reaches the skip link first with a visible outline; reduced motion

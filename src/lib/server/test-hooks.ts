@@ -22,7 +22,7 @@ const tempDirs: string[] = [];
  */
 export function resetConfigForTests(): void {
   const config = reloadConfig();
-  // Session and CSRT config for tests comes from tests/setup.ts, which sets
+  // Session and CSRF config for tests comes from tests/setup.ts, which sets
   // process.env before this module is first imported.
   void config;
 }

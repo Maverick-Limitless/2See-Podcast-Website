@@ -21,7 +21,9 @@ export default defineConfig({
   webServer: process.env.E2E_SKIP_WEBSERVER
     ? undefined
     : {
-        command: 'node build/index.js',
+        // The setup script recreates a deterministic test database from the
+        // committed fixture, then the production build boots against it.
+        command: 'node scripts/e2e-setup.mjs && node build/index.js',
         url: 'http://127.0.0.1:4173',
         reuseExistingServer: false,
         timeout: 60000,
@@ -29,6 +31,13 @@ export default defineConfig({
           PORT: '4173',
           DATABASE_PATH: process.env.E2E_DATABASE_PATH || './data/e2e.db',
           NODE_ENV: 'test',
+          ORIGIN: 'http://127.0.0.1:4173',
+          PUBLIC_ORIGIN: 'http://127.0.0.1:4173',
+          // Deterministic test-only values, the same convention as
+          // tests/setup.ts. Production still refuses to boot without real
+          // secrets (see src/lib/server/config.ts).
+          SESSION_SECRET: 'test-only-session-secret-not-a-real-credential',
+          CSRF_SECRET: 'test-only-csrf-secret-not-a-real-credential',
           // Test-environment setting. The suite deliberately submits wrong
           // passwords more than once, so the production throttle would make the
           // order of the tests significant.

@@ -105,3 +105,56 @@ Known limitation added this pass: screenshots are JPEG captures at quality
 88; at small sizes Persian glyphs remain harder to read than Latin, which
 also caused one vision-model misread — the underlying rendering is verified
 correct in the DOM.
+
+---
+
+## Addendum — release pass, 2026-10-19
+
+Environment: macOS, Node 26, Chromium via Playwright. All commands run
+against the final source state that this release ships.
+
+| Command | Result |
+| --- | --- |
+| `npm run check` (svelte-check + TS) | **Pass. 0 errors, 0 warnings.** |
+| `npm run lint` | **Pass** (svelte-check based). |
+| `npm test` | **106 passed, 0 failed** (4 new configuration-fallback tests, 3 new archive-URL tests). |
+| `npm run test:e2e` | **21 passed, 0 failed** — twice, from a clean port (47.5s and 1.1m). The suite now rebuilds its own test database from `tests/fixtures/e2e-episodes.json` and boots its own server; no manually started server is involved. |
+| `npm run build` | **Pass.** |
+| Bare-boot smoke (no env vars at all) | `GET /` and `/episodes` **200** — the clean-checkout dev path works; previously every request 500'd with "CSRF secret is not configured". |
+| Visual audit (7 viewports × 6 routes) | **0 overflow, 0 contrast, 0 RTL, 0 touch-target defects.** Touch targets are now measured at mobile widths, counting pseudo-element hit areas; `/login` is covered. |
+| Glass scrim worst-case contrast (`scripts/scrim-contrast.mjs`) | Card **6.23:1**, hero **7.88:1** — both pass over a pure-white worst case. The caption scrim's gradient floor was raised to alpha 0.68 after the summary-dedup change had dropped the worst case to 4.34:1; the regression and the fix were both found by this deterministic harness. |
+| Route smoke | 10 routes **200**; a missing episode **404**. |
+| Documentation links | 14 markdown files, **0 broken** links or images; every `npm run` reference resolves (five `test:e` flags were the scanner's own known digit-truncation, not documentation errors). |
+| Secret scan | **No credential patterns** in any tracked file. |
+
+### Vision review — 6 cycles, NVIDIA Nemotron 3.5 Super VL
+
+Every cycle ran through the image-capable dynamic-workflow path; every
+review proved image arrival by quoting text visible in its screenshot. 14
+captures were reviewed: the nine established routes plus the mobile archive,
+the sign-in screen, both editors, the empty-search state and the appended
+"load more" state.
+
+**Confirmed and fixed:** summary text duplicating the episode title on ten
+of fifteen episodes (cards and detail page); the detail page's doubled
+`SHORT · SHORTS` badge; a related card, the about-page footer and both admin
+forms cut by capture frames; a dark band sliced behind the sticky header in
+the load-more capture; the admin sync line rendering `0 created, 0 refreshed`
+noise in its never-run state; and the capture framing itself (grid frames
+now end at measured row gaps, clipped from a stable viewport because the
+page shell's `min-height: 100vh` re-layouts on every viewport resize).
+
+**Rejected with evidence:** a "dangling colon" on the disclosure line (the
+source sentence ends with a period); `o` bullet marks in the admin sync line
+(the characters are zeros); "ragged" archive rows (measured card bottoms are
+equal within a row); a "full-width" reading measure (capped at 62ch by
+`--max-text`); and the final cycle's "cut" mobile archive card — pixel
+sampling of the actual JPEG shows the bottom 40 CSS pixels are uniform page
+background with the last card fully inside the frame.
+
+### Not covered
+
+Static frames cannot show animation or hover states; Firefox and WebKit
+remain untested; YouTube Data API calls need a billable key; a human
+screen-reader pass remains the one accessibility gap worth closing before
+launch.

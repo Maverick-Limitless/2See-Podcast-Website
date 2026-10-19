@@ -88,15 +88,19 @@ function requireSecret(config: AppConfig): AppConfig {
   if (config.isProduction) {
     throw new Error('SESSION_SECRET is required. Generate one with: openssl rand -base64 48');
   }
-  // Development fallback keeps `npm run dev` usable on a clean checkout.
-  return { ...config, sessionSecret: 'development-only-insecure-session-secret' };
+  // Development fallback keeps `npm run dev` usable on a clean checkout. The
+  // CSRF secret must be back-filled from the same value: readConfig derived
+  // it from the raw (empty) session secret, so without this every request
+  // would fail in CSRF signing while the server still appears to boot.
+  const sessionSecret = 'development-only-insecure-session-secret';
+  return { ...config, sessionSecret, csrfSecret: config.csrfSecret || `${sessionSecret}::csrf` };
 }
 
 export const config: AppConfig = requireSecret(readConfig());
 
 /** Re-reads configuration from the environment. Used by scripts and tests. */
 export function reloadConfig(): AppConfig {
-  return readConfig();
+  return requireSecret(readConfig());
 }
 
 export const envFlag = bool;

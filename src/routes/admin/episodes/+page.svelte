@@ -214,8 +214,8 @@
         <tr>
           <th>Episode</th>
           <th>Status</th>
-          <th>Published</th>
-          <th></th>
+          <th>Published at</th>
+          <th><span class="visually-hidden">Actions</span></th>
         </tr>
       </thead>
       <tbody>

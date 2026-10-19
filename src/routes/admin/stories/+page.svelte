@@ -194,7 +194,7 @@
           <th>Title</th>
           <th>Status</th>
           <th>Read</th>
-          <th></th>
+          <th><span class="visually-hidden">Actions</span></th>
         </tr>
       </thead>
       <tbody>

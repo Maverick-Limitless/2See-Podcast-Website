@@ -75,7 +75,7 @@ These are the design's purposes — potential value, not measured outcomes. No g
 
 ## 6 — Technology and next step
 
-**Deliberately small.** One Node.js process. One SQLite file. No external database, no queue, no vendor lock-in — runs on any host with a persistent disk. Node ≥ 22.5, open mainstream stack (SvelteKit, TypeScript), 119 automated tests, documented deployment and backups.
+**Deliberately small.** One Node.js process. One SQLite file. No external database, no queue, no vendor lock-in — runs on any host with a persistent disk. Node ≥ 22.5, open mainstream stack (SvelteKit, TypeScript), 127 automated tests, documented deployment and backups.
 
 **Complexity:** low to operate (one process, one file), medium to extend (a real design system and correctness-tested publishing workflows).
 
